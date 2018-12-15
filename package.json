@@ -1,7 +1,7 @@
 {
   "name": "express-hr",
   "version": "1.0.0",
-  "description": "App to create video ideas",
+  "description": "App for HR",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

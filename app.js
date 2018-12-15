@@ -11,7 +11,7 @@ const app = express();
 
 // -- Controllers Dependencies
 const home = require('./controllers/home');
-const ideas = require('./controllers/ideas');
+const job = require('./controllers/job');
 const users = require('./controllers/users');
 
 // ----------------- DATABASE CONNECTION ------------------ //
@@ -78,7 +78,7 @@ app.use(function (req, res, next) {
 // --------------------- CONTROLLERS --------------------- //
 
 app.use('/', home);
-app.use('/ideas', ideas);
+app.use('/job', job);
 app.use('/users', users);
 
 // --------------------- ************ --------------------- //

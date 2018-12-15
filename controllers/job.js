@@ -3,38 +3,38 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const {ensureAuthenticated} = require('../config/auth');
 
-// Load Idea Model
-require('../models/idea');
-const Idea = mongoose.model('idea');
+// Load Job Model
+require('../models/job');
+const Job = mongoose.model('job');
 
-// Idea Index Page
+// Job Index Page
 router.get('/', ensureAuthenticated, (req, res) => {
-  Idea.find({user: req.user.id})
-    .sort({date:'desc'})
-    .then(ideas => {
-      res.render('ideas/index', {
-        ideas:ideas
+  Job.find({user: req.user.id})
+    .sort({createdAt:'desc'})
+    .then(jobs => {
+      res.render('job/index', {
+        jobs:jobs
       });
     });
 });
 
-// Add Idea Form
+// Add Job Form
 router.get('/add', ensureAuthenticated, (req, res) => {
-  res.render('ideas/add');
+  res.render('job/add');
 });
 
-// Edit Idea Form
+// Edit Job Form
 router.get('/edit/:id', ensureAuthenticated, (req, res) => {
-  Idea.findOne({
+  Job.findOne({
     _id: req.params.id
   })
-  .then(idea => {
-    if(idea.user != req.user.id){
+  .then(job => {
+    if(job.user != req.user.id){
       req.flash('error_msg', 'Not Authorized');
-      res.redirect('/ideas');
+      res.redirect('/job');
     } else {
-      res.render('ideas/edit', {
-        idea:idea
+      res.render('job/edit', {
+        job:job
       });
     }
     
@@ -59,44 +59,45 @@ router.post('/', ensureAuthenticated, (req, res) => {
       details: req.body.details
     });
   } else {
-    const newUser = {
+    const newJob = {
       title: req.body.title,
       details: req.body.details,
-      user: req.user.id
+      user: req.user.id,
+
     }
-    new Idea(newUser)
+    new Job(newJob)
       .save()
-      .then(idea => {
-        req.flash('success_msg', 'Video idea added');
-        res.redirect('/ideas');
+      .then(job => {
+        req.flash('success_msg', 'Video job added');
+        res.redirect('/job');
       })
   }
 });
 
 // Edit Form process
 router.put('/:id', ensureAuthenticated, (req, res) => {
-  Idea.findOne({
+  Job.findOne({
     _id: req.params.id
   })
-  .then(idea => {
+  .then(job => {
     // new values
-    idea.title = req.body.title;
-    idea.details = req.body.details;
+    job.title = req.body.title;
+    job.details = req.body.details;
 
-    idea.save()
-      .then(idea => {
-        req.flash('success_msg', 'Video idea updated');
-        res.redirect('/ideas');
+    job.save()
+      .then(job => {
+        req.flash('success_msg', 'Video job updated');
+        res.redirect('/job');
       })
   });
 });
 
-// Delete Idea
+// Delete Job
 router.delete('/:id', ensureAuthenticated, (req, res) => {
-  Idea.remove({_id: req.params.id})
+  Job.remove({_id: req.params.id})
     .then(() => {
-      req.flash('success_msg', 'Video idea removed');
-      res.redirect('/ideas');
+      req.flash('success_msg', 'Video job removed');
+      res.redirect('/job');
     });
 });
 
