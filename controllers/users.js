@@ -44,18 +44,20 @@ router.post('/register', (req, res) => {
       errors: errors,
       name: req.body.name,
       email: req.body.email,
+      username: req.body.username,
       password: req.body.password,
       password2: req.body.password2
     });
   } else {
-    User.findOne({email: req.body.email})
+    User.findOne( { $or : [ {email: req.body.email}, {username: req.body.username} ] })
       .then(user => {
         if(user){
-          req.flash('error_msg', 'Email already regsitered');
+          req.flash('error_msg', 'Username or Email already registered');
           res.redirect('/users/register');
         } else {
           const newUser = new User({
             name: req.body.name,
+            username: req.body.username,
             email: req.body.email,
             password: req.body.password
           });

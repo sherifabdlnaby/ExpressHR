@@ -37,6 +37,7 @@ app.set('view engine', 'handlebars');
 // ------------------------------------------------------- //
 
 // ------------------------ MISC ------------------------- //
+
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(flash());
@@ -65,6 +66,14 @@ app.use(passport.session());
 
 // ------------------------------------------------------- //
 
+// Global variables
+app.use(function (req, res, next) {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');          // TODO Make consistent with Passport Flash
+    res.locals.user = req.user || null;
+    next();
+});
 
 // --------------------- CONTROLLERS --------------------- //
 
@@ -74,15 +83,6 @@ app.use('/users', users);
 
 // --------------------- ************ --------------------- //
 
-
-// Global variables
-app.use(function (req, res, next) {
-    res.locals.success_msg = req.flash('success_msg');
-    res.locals.error_msg = req.flash('error_msg');
-    res.locals.error = req.flash('error');          // TODO Make consistent with Passport Flash
-    res.locals.user = req.user || null;
-    next();
-});
 
 const port = 5000;
 

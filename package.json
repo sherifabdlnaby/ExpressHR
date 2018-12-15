@@ -1,5 +1,5 @@
 {
-  "name": "vidjot",
+  "name": "express-hr",
   "version": "1.0.0",
   "description": "App to create video ideas",
   "main": "app.js",
