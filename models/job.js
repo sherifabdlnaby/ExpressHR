@@ -20,7 +20,7 @@ const JobSchema = new Schema({
     default: Date.now
   },
   applicants: {
-    type: {}
+    type: []
   },
   status: {
     type: Boolean,
