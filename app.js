@@ -1,45 +1,45 @@
 const express = require('express');
 const path = require('path');
-const exphbs  = require('express-handlebars');
+const exphbs = require('express-handlebars');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const mongoose = require('mongoose');
-
 const app = express();
 
-// Load routes
-const ideas = require('./routes/ideas');
-const users = require('./routes/users');
+// -- Controllers Dependencies
+const home = require('./controllers/home');
+const ideas = require('./controllers/ideas');
+const users = require('./controllers/users');
 
-// Passport Config
-require('./config/passport')(passport);
+// ----------------- DATABASE CONNECTION ------------------ //
 
-
-// ----------------- DATABASE CONFIG ------------------ // TODO ( Get it in its own file )
-// Map global promise - get rid of warning
 mongoose.Promise = global.Promise;
-
-// Connect to mongoose
-mongoose.connect('mongodb://localhost/expressHR', {
-  useMongoClient: true
+var configDB = require('./config/database.js');
+mongoose.connect(configDB.url, {
+    useMongoClient: true
 })
-  .then(() => console.log('MongoDB Connected...'))
-  .catch(err => console.log(err));
+.then(() => console.log('MongoDB Connected...'))
+.catch(err => console.log(err));
 
-// ----------------- -------------- ------------------ //
+// ------------------------------------------------------- //
 
-// Handlebars Middleware
+
+// -------------------- RENDER ENGINE -------------------- //
+
 app.engine('handlebars', exphbs({
-  defaultLayout: 'main'
+    defaultLayout: 'main'
 }));
 app.set('view engine', 'handlebars');
 
-// Body parser middleware
-app.use(bodyParser.urlencoded({ extended: false }));
+// ------------------------------------------------------- //
+
+// ------------------------ MISC ------------------------- //
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.use(flash());
 
 // Static folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -49,52 +49,43 @@ app.use(methodOverride('_method'));
 
 // Express session middleware
 app.use(session({
-  secret: 'dracarys',
-  resave: true,
-  saveUninitialized: true
+    secret: 'dracarys',
+    resave: true,
+    saveUninitialized: true
 }));
 
-// Passport middleware
+// ------------------------------------------------------- //
+
+
+// ---------------------- PASSPORT ----------------------- //
+
+require('./config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(flash());
-
-// Global variables
-app.use(function(req, res, next){
-  res.locals.success_msg = req.flash('success_msg');
-  res.locals.error_msg = req.flash('error_msg');
-  res.locals.error = req.flash('error');          // TODO Make consistent with Passport Flash
-  res.locals.user = req.user || null;
-  next();
-});
+// ------------------------------------------------------- //
 
 
+// --------------------- CONTROLLERS --------------------- //
 
-// ----------------- ROUTING ------------------ //  // TODO Abstract in its own file too
-
-// Index Route
-app.get('/', (req, res) => {
-  const title = 'Welcome';
-  res.render('index', {
-    title: title
-  });
-});
-
-// About Route
-app.get('/about', (req, res) => {
-  res.render('about');
-});
-
-
-// Use routes
+app.use('/', home);
 app.use('/ideas', ideas);
 app.use('/users', users);
 
-// ----------------- -------------- ------------------ //
+// --------------------- ************ --------------------- //
+
+
+// Global variables
+app.use(function (req, res, next) {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');          // TODO Make consistent with Passport Flash
+    res.locals.user = req.user || null;
+    next();
+});
 
 const port = 5000;
 
-app.listen(port, () =>{
-  console.log(`Server started on port ${port}`);
+app.listen(port, () => {
+    console.log(`Server started on port ${port}`);
 });
