@@ -1,9 +1,15 @@
+<div class="card card-body mb-2">
+    <h1>{{exam.title}}</h1>
+    <p>{{exam.details}}</p>
+    {{#each exam.questions}}
+        <h3>{{header}}</h3>
 
-  <div class="card card-body mb-2">
-    <h1>{{job.title}}</h1>
-    <h5>{{job.applicants.length}} Applicants </h5>
-      <p>{{job.details}}</p>
-      <p> Employer: {{job.employer.name}}  <br/> Email: <span class="text-secondary"> {{job.employer.email}} </span> </p>
-      <p></p>
-      <a href="/job/apply/{{job._id}}" class="btn btn-success btn-lg">Apply</a>
-  </div>
+        {{#each correct}}
+            <input type="text" class="form-control is-valid mb-1" value="{{this}}" disabled>
+        {{/each}}
+
+        {{#each incorrect}}
+            <input type="text" class="form-control is-invalid mb-1" value="{{this}}" disabled>
+        {{/each}}
+    {{/each}}
+</div>

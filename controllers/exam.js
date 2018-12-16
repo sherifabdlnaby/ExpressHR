@@ -58,11 +58,16 @@ router.post('/:id/addquestion', ensureAuthenticated, (req, res) => {
                     _id: req.params.id
                 })
                     .then(exam => {
-                        exam.questions.push(question);
-                        exam.save().then(exam => {
-                            req.flash('success_msg', 'Question Added');
-                            res.redirect('/exam/'+ req.params.id +'/addquestion/');
-                        })
+                        if(exam.user == req.user.id) {
+                            exam.questions.push(question);
+                            exam.save().then(exam => {
+                                req.flash('success_msg', 'Question Added');
+                                res.redirect('/exam/' + req.params.id + '/addquestion/');
+                            })
+                        }else{
+                            req.flash('error_msg', 'Not Authorized');
+                            res.redirect('/');
+                        }
                     });
             });
     }
@@ -73,12 +78,30 @@ router.post('/:id/addquestion', ensureAuthenticated, (req, res) => {
 // Job Index Page
 router.get('/', ensureAuthenticated, (req, res) => {
     Exam.find({'user': req.user.id})
-        .populate('questions.header')
+        .populate('questions')
         .then(exams => {
             res.render('exam/index', {
                 exams: exams
             });
         });
+});
+
+
+router.get('/view/:id/', ensureAuthenticated, (req, res) => {
+    Exam.findOne({
+        _id: req.params.id
+    })
+    .populate('questions')
+    .then(exam => {
+        if (exam.user != req.user.id) {
+            req.flash('error_msg', 'Not Authorized');
+            res.redirect('/');
+        } else {
+            res.render('exam/view', {
+                exam: exam
+            });
+        }
+    });
 });
 
 module.exports = router;
