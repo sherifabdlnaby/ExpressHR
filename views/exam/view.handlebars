@@ -1,0 +1,9 @@
+
+  <div class="card card-body mb-2">
+    <h1>{{job.title}}</h1>
+    <h5>{{job.applicants.length}} Applicants </h5>
+      <p>{{job.details}}</p>
+      <p> Employer: {{job.employer.name}}  <br/> Email: <span class="text-secondary"> {{job.employer.email}} </span> </p>
+      <p></p>
+      <a href="/job/apply/{{job._id}}" class="btn btn-success btn-lg">Apply</a>
+  </div>

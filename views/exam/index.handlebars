@@ -1,0 +1,10 @@
+{{#each exams}}
+  <div class="card card-body mb-2">
+    <h4><a href="/exam/view/{{_id}}">{{title}}</a></h4>
+    <p>{{details}}</p>
+    <p>{{type}}</p>
+    <a class="btn btn-primary btn-block mb-2" href="/exam/{{_id}}/addquestion">Add Question</a>
+  </div>
+{{else}}
+  <p>No jobs posted</p>
+{{/each}}

@@ -1,0 +1,18 @@
+<div class="card card-body">
+  <h3>Add Exam</h3>
+    <form action="/exam" method="post">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" name="title" required>
+        </div>
+        <div class="form-group">
+            <label for="details">Type</label>
+            <input class="form-control" name="type" required></input>
+        </div>
+        <div class="form-group">
+            <label for="details">Details</label>
+            <textarea class="form-control" name="details" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
