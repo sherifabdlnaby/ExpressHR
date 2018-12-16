@@ -73,6 +73,7 @@ router.post('/:id/addquestion', ensureAuthenticated, (req, res) => {
 // Job Index Page
 router.get('/', ensureAuthenticated, (req, res) => {
     Exam.find({'user': req.user.id})
+        .populate('questions.header')
         .then(exams => {
             res.render('exam/index', {
                 exams: exams

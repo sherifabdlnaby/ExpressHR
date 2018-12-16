@@ -1,10 +1,24 @@
-{{#each exams}}
-  <div class="card card-body mb-2">
-    <h4><a href="/exam/view/{{_id}}">{{title}}</a></h4>
-    <p>{{details}}</p>
-    <p>{{type}}</p>
-    <a class="btn btn-primary btn-block mb-2" href="/exam/{{_id}}/addquestion">Add Question</a>
-  </div>
-{{else}}
-  <p>No jobs posted</p>
-{{/each}}
+<div class="card bg-light col-lg-12 mb-5">
+    <div class="card-body">
+    <h1 class="card-subtitle mb-2">Exams</h1>
+    <h5 class="card-subtitle mb-2 text-muted">{{exams.length}} Exam </h5>
+
+    <br/>
+    <div class="card-deck mb-3">
+    {{#each exams}}
+        <div class="card mb-3 border-primary">
+            <div class="card-body">
+                <h5 class="card-title"><a href="/exam/view/{{_id}}">{{title}}</a></h5>
+                <h6 class="card-subtitle mb-3 text-muted">{{details}}</h6>
+                <h6 class="card-subtitle mb-2 text-muted"><span class="text-dark">Type:</span> {{type}}</h6>
+                <h6 class="card-subtitle mb-2 text-muted"><span class="text-dark">Questions Bank: </span> {{questions.length}} question</h6>
+                <a class="btn btn-primary btn-block mb-2" href="/exam/{{_id}}/addquestion">Add Question</a>
+            </div>
+        </div>
+
+    {{else}}
+        <p>No exams.</p>
+    {{/each}}
+    </div>
+</div>
+</div>
