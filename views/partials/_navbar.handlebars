@@ -17,7 +17,7 @@
       <ul class="navbar-nav ml-auto">
         {{#if user}}
           <li class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="navbarDropdownMenuLink">Jobs</a>
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="navbarDropdownMenuLink">{{user.name}}</a>
             <div class="dropdown-menu">
                 <a href="/job/add" class="dropdown-item">Post Job</a>
                 <a href="/job" class="dropdown-item">Posted Jobs</a>

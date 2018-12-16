@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Create Schema
-const JobSchema = new Schema({
+const JobSchema = new Schema(
+    {
   title:{
     type: String,
     required: true
@@ -11,8 +12,8 @@ const JobSchema = new Schema({
     type: String,
     required: true
   },
-  user:{
-    type: String,
+  employer:{
+    type: {},
     required:true
   },
   createdAt: {
@@ -26,6 +27,7 @@ const JobSchema = new Schema({
     type: Boolean,
     default: true
   }
-});
+},
+    { usePushEach: true },);
 
 mongoose.model('job', JobSchema);
