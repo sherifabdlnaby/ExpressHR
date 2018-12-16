@@ -45,6 +45,8 @@ router.post('/:id/addquestion', ensureAuthenticated, (req, res) => {
         res.render('exam/addquestion', { errors: errors, id : req.params.id});
 
     } else {
+        req.body.correct.pop();
+        req.body.incorrect.pop();
         const newQuestion = {
             header: req.body.header,
             correct: req.body.correct,

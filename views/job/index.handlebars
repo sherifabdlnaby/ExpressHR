@@ -1,3 +1,7 @@
+<div class="card card-body">
+    <h3 class="test-muted">Posted Jobs</h3>
+    <br/>
+<div class="card-deck mb-3">
 {{#each jobs}}
   <div class="card card-body mb-2">
     <h4><a href="/job/view/{{id}}">{{title}}</a></h4>
@@ -12,3 +16,6 @@
 {{else}}
   <p>No jobs posted</p>
 {{/each}}
+
+</div>
+</div>
