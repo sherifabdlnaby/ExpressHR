@@ -1,0 +1,58 @@
+<style>
+
+</style>
+
+<div class="card card-body">
+  <h3>Add Question </h3>
+    <form action="/exam/{{id}}/addquestion" method="post">
+        <div class="form-group">
+            <label for="title">Header</label>
+            <input type="text" class="form-control" name="header" required>
+        </div>
+
+
+        <div class="form-group">
+            <label for="title">Correct Answers </label>
+            <div class="input-group control-group after-add-more">
+                <input type="text" name="correct" class="form-control" placeholder="Answer">
+                <div class="input-group-btn">
+                    <button class="btn btn-success add-more" type="button"><i class="glyphicon glyphicon-plus"></i> Add</button>
+                </div>
+            </div>
+
+            <!-- Copy Fields -->
+            <div class="copy hide" hidden>
+                <div class="control-group input-group" style="margin-top:10px">
+                    <input type="text" name="correct" class="form-control" placeholder="Answer">
+                    <div class="input-group-btn">
+                        <button class="btn btn-danger remove" type="button"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label for="title">Wrong Answers </label>
+            <div class="input-group control-group-2 after-add-more-2">
+                <input type="text" name="incorrect" class="form-control" placeholder="Answer">
+                <div class="input-group-btn">
+                    <button class="btn btn-success add-more-2" type="button"><i class="glyphicon glyphicon-plus"></i> Add</button>
+                </div>
+            </div>
+
+            <!-- Copy Fields -->
+            <div class="copy-2 hide" hidden>
+                <div class="control-group-2 input-group" style="margin-top:10px">
+                    <input type="text" name="incorrect" class="form-control" placeholder="Answer">
+                    <div class="input-group-btn">
+                        <button class="btn btn-danger remove" type="button"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

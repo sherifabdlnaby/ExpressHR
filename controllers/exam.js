@@ -20,41 +20,51 @@ router.get('/add', ensureAuthenticated, (req, res) => {
     res.render('exam/add');
 });
 
-// Add Exam
-router.post('/', ensureAuthenticated, (req, res) => {
+// Add Exam Question Form
+router.get('/:id/addquestion', ensureAuthenticated, (req, res) => {
+    res.render('exam/addquestion', { id : req.params.id});
+});
+
+// Add Exam Question
+router.post('/:id/addquestion', ensureAuthenticated, (req, res) => {
     let errors = [];
 
-    if (!req.body.title) {
-        errors.push({text: 'Please add a title'});
+    if (!req.body.header) {
+        errors.push({text: 'Please add a header'});
     }
-    if (!req.body.details) {
-        errors.push({text: 'Please add some details'});
+
+    if (!req.body.correct || req.body.correct.length < 1) {
+        errors.push({text: 'Please add correct answers'});
     }
-    if (!req.body.type) {
-        errors.push({text: 'Please add some details'});
+
+    if (!req.body.incorrect || req.body.incorrect.length < 1) {
+        errors.push({text: 'Please add incorrect answers'});
     }
 
     if (errors.length > 0) {
-        res.render('/add', {
-            errors: errors,
-            title: req.body.title,
-            details: req.body.details,
-            type: req.body.type
-        });
+        res.render('exam/addquestion', { errors: errors, id : req.params.id});
+
     } else {
-        const newExam = {
-            title: req.body.title,
-            details: req.body.details,
-            type: req.body.type,
-            user: req.user.id,
-            questions : []
+        const newQuestion = {
+            header: req.body.header,
+            correct: req.body.correct,
+            incorrect: req.body.incorrect,
         };
-        new Exam(newExam)
+
+        new Question(newQuestion)
             .save()
-            .then(exam => {
-                req.flash('success_msg', 'Exam Added, Go add questions.');
-                res.redirect('/exam');
-            })
+            .then(question => {
+                Exam.findOne({
+                    _id: req.params.id
+                })
+                    .then(exam => {
+                        exam.questions.push(question);
+                        exam.save().then(exam => {
+                            req.flash('success_msg', 'Question Added');
+                            res.redirect('/exam/'+ req.params.id +'/addquestion/');
+                        })
+                    });
+            });
     }
 });
 

@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 // Create Schema
 const QuestionSchema = new Schema(
     {
-        text: {
+        header: {
             type: String,
             required: true
         },
