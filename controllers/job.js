@@ -57,6 +57,24 @@ router.get('/edit/:id', ensureAuthenticated, (req, res) => {
         });
 });
 
+// View Applicants Form
+router.get('/applicants/:id', ensureAuthenticated, (req, res) => {
+    Job.findOne({
+        _id: req.params.id
+    })
+        .then(job => {
+            if (job.employer._id != req.user.id) {
+                req.flash('error_msg', 'Not Authorized');
+                res.redirect('/job');
+            } else {
+                res.render('job/applicants', {
+                    job: job
+                });
+            }
+
+        });
+});
+
 router.get('/apply/:id', ensureAuthenticated, (req, res) => {
     Job.findOne({
         _id: req.params.id
@@ -140,7 +158,7 @@ router.post('/apply', ensureAuthenticated, uploadCv.single('cv'), (req, res, don
                         email: req.user.email,
                         username: req.user.username,
                         cv: {
-                            path: req.file.path,
+                            path: req.file.path.slice(7),
                             size: req.file.size,
                         },
                     });

@@ -3,6 +3,7 @@
     <h4><a href="/job/view/{{id}}">{{title}}</a></h4>
     <p>{{details}}</p>
     <a class="btn btn-dark btn-block mb-2" href="/job/edit/{{id}}">Edit</a>
+    <a class="btn btn-dark btn-block mb-2" href="/job/applicants/{{id}}">Edit</a>
     <form method="post" action="/job/{{id}}?_method=DELETE">
       <input type="hidden" name="_method" value="DELETE">
       <input type="submit" class="btn btn-danger btn-block" value="Delete">
