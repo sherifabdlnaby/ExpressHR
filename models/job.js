@@ -21,13 +21,19 @@ const JobSchema = new Schema(
     default: Date.now
   },
   applicants: {
-    type: []
+    type: [
+      {
+        user : { type: Schema.Types.ObjectId, ref: 'user' },
+        cv  : {}
+      }
+    ]
   },
   status: {
     type: Boolean,
     default: true
   }
 },
-    { usePushEach: true },);
+    { usePushEach: true },
+    { usePullEach: true },);
 
 mongoose.model('job', JobSchema);

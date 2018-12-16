@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 const {ensureAuthenticated} = require('../config/auth');
-var multer  = require('multer')
+var multer = require('multer')
 const uuidv1 = require('uuid/v1');
 uuidv1(); // ⇨ '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e'
 var storage = multer.diskStorage({
@@ -10,10 +10,10 @@ var storage = multer.diskStorage({
         cb(null, 'public/uploads/cvs')
     },
     filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + uuidv1() + '-'+ Date.now() + '.pdf')
+        cb(null, file.fieldname + '-' + uuidv1() + '-' + Date.now() + '.pdf')
     }
 });
-var uploadCv = multer({ dest: 'public/uploads/cvs', storage: storage });
+var uploadCv = multer({dest: 'public/uploads/cvs', storage: storage});
 
 
 // Load Job Model
@@ -38,7 +38,6 @@ router.get('/add', ensureAuthenticated, (req, res) => {
 });
 
 
-
 // Edit Job Form
 router.get('/edit/:id', ensureAuthenticated, (req, res) => {
     Job.findOne({
@@ -57,11 +56,38 @@ router.get('/edit/:id', ensureAuthenticated, (req, res) => {
         });
 });
 
-// View Applicants Form
-router.get('/applicants/:id', ensureAuthenticated, (req, res) => {
+// Reject Applicant
+router.post('/applicants/:id/reject', ensureAuthenticated, (req, res) => {
     Job.findOne({
         _id: req.params.id
     })
+        .populate('applicants.user')
+        .then(job => {
+            if (job.employer._id != req.user.id) {
+                req.flash('error_msg', 'Not Authorized');
+                res.redirect('/job');
+            } else {
+                Job.update(
+                    {_id: req.params.id},
+                    {$pull: {applicants: {_id: req.body.applicant_id}}},
+                    {multi: true}
+                ).then(() => {
+                    req.flash('success_msg', 'Removed');
+                    res.redirect('/job/applicants/' + req.params.id + '/view');
+                });
+            }
+        }).catch(err => {
+        console.log(err);
+        req.flash('error_msg', 'An Error Occurred');
+        res.redirect('/');
+    });
+});
+
+// View Applicants Form
+router.get('/applicants/:id/view', ensureAuthenticated, (req, res) => {
+    Job.findOne({
+        _id: req.params.id
+    }).populate('applicants.user')
         .then(job => {
             if (job.employer._id != req.user.id) {
                 req.flash('error_msg', 'Not Authorized');
@@ -71,9 +97,9 @@ router.get('/applicants/:id', ensureAuthenticated, (req, res) => {
                     job: job
                 });
             }
-
         });
 });
+
 
 router.get('/apply/:id', ensureAuthenticated, (req, res) => {
     Job.findOne({
@@ -82,7 +108,7 @@ router.get('/apply/:id', ensureAuthenticated, (req, res) => {
         .then(job => {
             if (job.employer._id == req.user.id) {
                 req.flash('error_msg', 'Cannot Apply to your own Job.');
-                res.redirect('/job/view/'+req.params.id);
+                res.redirect('/job/view/' + req.params.id);
             } else {
                 res.render('job/apply', {
                     job: job
@@ -143,20 +169,18 @@ router.post('/', ensureAuthenticated, (req, res) => {
 });
 
 router.post('/apply', ensureAuthenticated, uploadCv.single('cv'), (req, res, done) => {
-    Job.findOne( { $and : [ {_id: req.body.id} ]})
-        .then( job => {
-            if(job) {
-                result = job.applicants.find(applicant => applicant._id == req.user.id);
+    Job.findOne({$and: [{_id: req.body.id}]})
+        .populate('applicants.user')
+        .then(job => {
+            if (job) {
+                result = job.applicants.find(applicant => applicant.user._id == req.user.id);
                 if (result) {
                     req.flash('error_msg', 'You Already Applied for This Job.');
                     res.redirect('/job/view/' + req.body.id);
                     done()
                 } else {
                     job.applicants.push({
-                        _id: req.user._id,
-                        name: req.user.name,
-                        email: req.user.email,
-                        username: req.user.username,
+                        user: req.user._id,
                         cv: {
                             path: req.file.path.slice(7),
                             size: req.file.size,
@@ -169,9 +193,9 @@ router.post('/apply', ensureAuthenticated, uploadCv.single('cv'), (req, res, don
                 }
             }
         }).catch(err => {
-            req.flash('error_msg', 'Something Wrong Happened');
-            res.redirect('/job/view/' + req.body.id);
-        })
+        req.flash('error_msg', 'Something Wrong Happened');
+        res.redirect('/job/view/' + req.body.id);
+    })
 });
 
 // Edit Form process
@@ -186,7 +210,7 @@ router.put('/:id', ensureAuthenticated, (req, res) => {
 
             job.save()
                 .then(job => {
-                    req.flash('success_msg', 'Video job updated');
+                    req.flash('success_msg', 'Job updated');
                     res.redirect('/job');
                 })
         });
