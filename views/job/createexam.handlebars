@@ -1,0 +1,44 @@
+<style>
+
+</style>
+
+<div class="card card-body">
+  <h3>Create Exam for : <span class="text-muted">{{applicant.name}}</span> </h3>
+    <br/>
+    <hr/>
+    <h3 class="card-subtitle mb-2">Select Exam</h3>
+
+
+    <form action="/examtemplate/{{id}}/addquestion" method="post">
+
+        <div class="form-group">
+        <select multiple="multiple" id="my-select" name="examtemplates">
+            {{#each examtemplates}}
+                <option value='elem_1'>{{title}} : {{type}}</option>
+            {{/each}}
+        </select>
+        </div>
+
+        <div class="form-group">
+            <label for="meeting-time">Choose Duration <small>(In minutes)</small>: </label>
+            <input class="form-control" type="number" id="duration"  name="duration">
+        </div>
+
+        <div class="form-group">
+            <label for="meeting-time">Choose Deadline Date/Time: </label>
+            <input class="form-control" type="datetime-local" id="meeting-time"  name="deadline">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+
+
+
+
+
+
+
+
+
+</div>

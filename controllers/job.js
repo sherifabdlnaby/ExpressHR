@@ -18,7 +18,11 @@ var uploadCv = multer({dest: 'public/uploads/cvs', storage: storage});
 
 // Load Job Model
 require('../models/job');
+require('../models/exam');
+require('../models/examtemplate');
 const Job = mongoose.model('job');
+const Exam = mongoose.model('exam');
+const ExamTemplate = mongoose.model('examtemplate');
 
 // Job Index Page
 router.get('/', ensureAuthenticated, (req, res) => {
@@ -31,12 +35,10 @@ router.get('/', ensureAuthenticated, (req, res) => {
         });
 });
 
-
 // Add Job Form
 router.get('/add', ensureAuthenticated, (req, res) => {
     res.render('job/add');
 });
-
 
 // Edit Job Form
 router.get('/edit/:id', ensureAuthenticated, (req, res) => {
@@ -99,7 +101,6 @@ router.get('/applicants/:id/view', ensureAuthenticated, (req, res) => {
             }
         });
 });
-
 
 router.get('/apply/:id', ensureAuthenticated, (req, res) => {
     Job.findOne({
@@ -223,6 +224,32 @@ router.delete('/:id', ensureAuthenticated, (req, res) => {
             req.flash('success_msg', 'Video job removed');
             res.redirect('/job');
         });
+});
+
+router.get('/applicants/:id/sendexam/:applicant_id', ensureAuthenticated, (req, res) => {
+    Job.findOne({
+        _id: req.params.id
+    })
+        .populate('applicants.user')
+        .then(job => {
+            if (job.employer._id != req.user.id) {
+                req.flash('error_msg', 'Not Authorized');
+                res.redirect('/job');
+            } else {
+                ExamTemplate.find({'user': req.user.id})
+                    .populate('questions')
+                    .then(examtemplates => {
+                        res.render('job/createexam', {
+                            job: job,
+                            examtemplates: examtemplates,
+                            applicant: job.applicants.find(applicant => applicant.user._id == req.params.applicant_id).user
+                        });
+                    });
+            }
+        }).catch(err => {
+        req.flash('error_msg', 'An Error Occurred');
+        res.redirect('/');
+    });
 });
 
 module.exports = router;

@@ -18,7 +18,8 @@
                     <h6 class="card-subtitle mb-2 text-muted">{{user.email}}</h6>
                     <h6 class="card-subtitle mb-2 text-muted">{{user.username}}</h6>
                     <a href="/{{cv.path}}" class="card-link">Download CV</a>
-<!--                    <a href="/{{cv.path}}"  class="btn btn-primary mb-1">Download CV</a>-->
+                    <a href="/job/applicants/{{../job._id}}/sendexam/{{user._id}}" class="card-link">Create Exam</a>
+                    <!--                    <a href="/{{cv.path}}"  class="btn btn-primary mb-1">Download CV</a>-->
                     <form action="/job/applicants/{{../job._id}}/reject" method="post">
                         <input type="hidden" name="applicant_id" value="{{_id}}">
                         <input type="submit" class="btn btn-danger mb-1" value="Reject">
