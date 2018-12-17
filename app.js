@@ -13,7 +13,7 @@ const app = express();
 const home = require('./controllers/home');
 const job = require('./controllers/job');
 const users = require('./controllers/users');
-const exams = require('./controllers/exam');
+const examtemplates = require('./controllers/examtemplate');
 
 // ----------------- DATABASE CONNECTION ------------------ //
 
@@ -81,7 +81,7 @@ app.use(function (req, res, next) {
 app.use('/', home);
 app.use('/job', job);
 app.use('/users', users);
-app.use('/exam', exams);
+app.use('/examtemplate', examtemplates);
 
 // --------------------- ************ --------------------- //
 

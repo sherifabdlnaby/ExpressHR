@@ -1,13 +1,13 @@
 <div class="card card-body mb-2">
-    <h6 class="text-muted">Exam</h6>
-    <h1>{{exam.title}}</h1>
-    <p>{{exam.details}}</p>
+    <h6 class="text-muted">Exam Template</h6>
+    <h1>{{examtemplate.title}}</h1>
+    <p>{{examtemplate.details}}</p>
 
-    <h5><a href="#" class="badge-pill badge-info">{{exam.type}}</a></h5>
+    <h5><a href="#" class="badge-pill badge-info">{{examtemplate.type}}</a></h5>
 
     <hr/>
     <h2 class="text-primary"> Questions </h2>
-    {{#each exam.questions}}
+    {{#each examtemplate.questions}}
         <h3>{{header}}</h3>
 
         <H6 class="text-success"> Correct </H6>

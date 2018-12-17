@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Create Schema
-const ExamSchema = new Schema(
+const ExamTemplateSchema = new Schema(
     {
         title: {
             type: String,
@@ -28,4 +28,4 @@ const ExamSchema = new Schema(
     {usePullEach: true},
 );
 
-mongoose.model('exam', ExamSchema);
+mongoose.model('examtemplate', ExamTemplateSchema);
