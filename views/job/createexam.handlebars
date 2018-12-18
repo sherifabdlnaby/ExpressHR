@@ -3,18 +3,21 @@
 </style>
 
 <div class="card card-body">
-  <h3>Create Exam for : <span class="text-muted">{{applicant.name}}</span> </h3>
+    <h3>Create Exam for : <span class="text-muted">{{applicant.name}}</span> </h3>
+    <h6 class="card-subtitle mb-2 "> Job: <span class="text-muted">{{job.title}}</span></h6>
     <br/>
-    <hr/>
-    <h3 class="card-subtitle mb-2">Select Exam</h3>
+    <h4 class="card-subtitle mb-2">Select Exam Templates: </h4>
 
 
-    <form action="/examtemplate/{{id}}/addquestion" method="post">
+    <form action="/job/applicants/{{job._id}}/sendexam/" method="post">
+
+        <input class="form-control" type="text" id="applicant_id" value="{{applicant.id}}"  name="applicant_id" hidden>
+
 
         <div class="form-group">
         <select multiple="multiple" id="my-select" name="examtemplates">
             {{#each examtemplates}}
-                <option value='elem_1'>{{title}} : {{type}}</option>
+                <option value='{{_id}}'>{{title}} : {{type}}</option>
             {{/each}}
         </select>
         </div>

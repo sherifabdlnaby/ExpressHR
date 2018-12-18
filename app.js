@@ -31,7 +31,12 @@ mongoose.connect(configDB.url, {
 // -------------------- RENDER ENGINE -------------------- //
 
 app.engine('handlebars', exphbs({
-    defaultLayout: 'main'
+    defaultLayout: 'main',
+    helpers: {
+        equals: function (val1, val2) {
+            return val1 == val2
+        },
+    },
 }));
 app.set('view engine', 'handlebars');
 

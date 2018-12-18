@@ -17,11 +17,24 @@
                     <h5 class="card-title">{{user.name}}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">{{user.email}}</h6>
                     <h6 class="card-subtitle mb-2 text-muted">{{user.username}}</h6>
+                    {{#if (equals status "new")}}
+                        <a href="/job/applicants/{{../job._id}}/sendexam/{{user._id}}" class="card-link">Create Exam</a>
+                    {{/if}}
+                    {{#if (equals status "exam_sent")}}
+                        <a class="badge-pill badge-primary"><span class="text-white">Exam Sent To User</span></a>
+                    {{/if}}
+                    {{#if (equals status "exam_done")}}
+                        <a class="badge-pill badge-success"><span class="text-white">Exam Done</span></a>
+                        <a href="/job/applicants/{{../job._id}}/viewexam/{{user._id}}" class="card-link">View Result</a>
+                    {{/if}}
+                    <br/>
                     <a href="/{{cv.path}}" class="card-link">Download CV</a>
-                    <a href="/job/applicants/{{../job._id}}/sendexam/{{user._id}}" class="card-link">Create Exam</a>
-                    <!--                    <a href="/{{cv.path}}"  class="btn btn-primary mb-1">Download CV</a>-->
-                    <form action="/job/applicants/{{../job._id}}/reject" method="post">
+                    <br/>
+                    <form action="/job/applicants/{{../job._id}}/reject" method="post" >
                         <input type="hidden" name="applicant_id" value="{{_id}}">
+                        {{#if (equals status "exam_done")}}
+                            <input type="submit" class="btn btn-success mb-1" value="Accept">
+                        {{/if}}
                         <input type="submit" class="btn btn-danger mb-1" value="Reject">
                     </form>
                 </div>
