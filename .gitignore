@@ -4,6 +4,8 @@ logs
 
 .idea/**
 
+public/uploads/**
+
 # Runtime data
 pids
 *.pid
