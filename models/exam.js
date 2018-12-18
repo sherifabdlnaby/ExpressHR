@@ -5,7 +5,6 @@ const Schema = mongoose.Schema;
 const ExamSchema = new Schema(
     {
         user: {type: Schema.Types.ObjectId, ref: 'user'},
-        exam: {type: Schema.Types.ObjectId, ref: 'exam'},
         job: {type: Schema.Types.ObjectId, ref: 'job'},
         createdAt: {
             type: Date,
@@ -18,15 +17,24 @@ const ExamSchema = new Schema(
             type: Date,
             default: Date.now
         },
-        questions: [
+        duration : {
+            type: Number,
+            default: 30
+        },
+        selectedExams: [
             {
-                question : {
-                    type: Schema.Types.ObjectId,
-                    ref: 'question'
-                },
-                answer : {
-                    type: String
-                }
+                examTemplate: {type: Schema.Types.ObjectId, ref: 'examtemplate'},
+                selectedQuestions:
+                [
+                    {
+                        question: {
+                            type: Schema.Types.ObjectId,
+                            ref: 'question'
+                        },
+                        answers: [{type: String}],
+                        answer: {type: String}
+                    }
+                ]
             }
         ],
     },

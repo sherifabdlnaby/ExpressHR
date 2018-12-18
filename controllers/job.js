@@ -182,6 +182,7 @@ router.post('/apply', ensureAuthenticated, uploadCv.single('cv'), (req, res, don
                 } else {
                     job.applicants.push({
                         user: req.user._id,
+                        status: "new",
                         cv: {
                             path: req.file.path.slice(7),
                             size: req.file.size,
@@ -194,6 +195,7 @@ router.post('/apply', ensureAuthenticated, uploadCv.single('cv'), (req, res, don
                 }
             }
         }).catch(err => {
+            console.log(err)
         req.flash('error_msg', 'Something Wrong Happened');
         res.redirect('/job/view/' + req.body.id);
     })
@@ -251,5 +253,85 @@ router.get('/applicants/:id/sendexam/:applicant_id', ensureAuthenticated, (req, 
         res.redirect('/');
     });
 });
+
+router.post('/applicants/:id/sendexam/', ensureAuthenticated, async (req, res, done) => {
+
+    job = await Job.findOne({_id: req.params.id}).populate('applicants.user');
+
+    let selectedTemplates;
+
+    if (job.employer._id != req.user.id) {
+        req.flash('error_msg', 'Not Authorized');
+        res.redirect('/job');
+        done()
+    }
+
+    let newExam = {
+        user: req.body.applicant_id,
+        job: req.params.id,
+        deadline: req.body.deadline,
+        duration: req.body.duration,
+        selectedExams: []
+    };
+
+
+    if(! (req.body.examtemplates instanceof Array) ){
+        req.body.examtemplates = [req.body.examtemplates]
+    }
+
+    selectedTemplates = await ExamTemplate.find( {'_id': { $in: req.body.examtemplates.map(mongoose.Types.ObjectId) }}).populate('questions');
+
+    selectedTemplates.forEach(function (template) {
+        let N = template.questions.length;
+        let numberOfQuestions = Math.floor(Math.random() * (N - 1)) + 1;
+        let questions = shuffle(template.questions).slice(0, numberOfQuestions);
+        newExam.selectedExams.push({
+                examTemplate: template._id,
+                selectedQuestions: questions.map(function (question) {
+                    selectedAnswers = shuffle( question.incorrect ).slice(0,Math.min(question.incorrect.length, 3));
+                    selectedAnswers.push(shuffle(question.correct)[0]);
+                    return {
+                        question : question,
+                        answers:  shuffle(selectedAnswers),
+                        answer: ""
+                    }
+                })
+            }
+        )
+    });
+
+    let exam = await (new Exam(newExam)).save();
+
+    applicantIndex = job.applicants.findIndex(applicant => applicant.user._id == req.body.applicant_id);
+
+    job.applicants[applicantIndex].status = "exam_sent";
+
+    job = await job.save();
+
+    req.flash('success_msg', 'Exam Sent to User. ##TODO SEND MAIL, VIEW APPLICANT STATUS');
+    res.redirect('/');
+});
+
+
+
+// Shuffle array (This should be in this file and better be sent to somewhere else but yea nvm...)
+function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+}
 
 module.exports = router;
