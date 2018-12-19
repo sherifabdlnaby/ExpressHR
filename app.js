@@ -14,6 +14,7 @@ const home = require('./controllers/home');
 const job = require('./controllers/job');
 const users = require('./controllers/users');
 const examtemplates = require('./controllers/examtemplate');
+const exam = require('./controllers/exam');
 
 // ----------------- DATABASE CONNECTION ------------------ //
 
@@ -22,8 +23,8 @@ var configDB = require('./config/database.js');
 mongoose.connect(configDB.url, {
     useMongoClient: true
 })
-.then(() => console.log('MongoDB Connected...'))
-.catch(err => console.log(err));
+    .then(() => console.log('MongoDB Connected...'))
+    .catch(err => console.log(err));
 
 // ------------------------------------------------------- //
 
@@ -36,6 +37,9 @@ app.engine('handlebars', exphbs({
         equals: function (val1, val2) {
             return val1 == val2
         },
+        inc: function (value, options) {
+            return parseInt(value) + 1;
+        }
     },
 }));
 app.set('view engine', 'handlebars');
@@ -87,6 +91,7 @@ app.use('/', home);
 app.use('/job', job);
 app.use('/users', users);
 app.use('/examtemplate', examtemplates);
+app.use('/exam', exam);
 
 // --------------------- ************ --------------------- //
 

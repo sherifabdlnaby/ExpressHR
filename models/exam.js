@@ -12,6 +12,7 @@ const ExamSchema = new Schema(
         },
         startedAt: {
             type: Date,
+            default: null
         },
         deadline: {
             type: Date,

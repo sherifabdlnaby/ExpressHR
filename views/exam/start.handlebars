@@ -1,0 +1,43 @@
+<div class="card card-body mb-2" style="width: 100% !important; padding: 2 !important;">
+    <h6>Exam</h6>
+
+    <h2>{{exam.job.title}}</h2>
+
+    <p class="mb-0">
+        <span class="badge  badge-light"> Duration: {{exam.duration}} Minute</span>
+    </p>
+    <p class="mb-0">
+        <span class="badge  badge-danger"> Duration: {{exam.deadline}} Minute</span>
+    </p>
+    <p>
+        <span class="badge  badge-info  "> Number of Exams: {{exam.selectedExams.length}} </span>
+    </p>
+
+
+    <hr/>
+
+
+    {{#each exam.selectedExams}}
+
+        <div class="card text-dark bg-light mb-3">
+            <div class="card-header">
+                <h6 class="badge badge-pill badge-light">Exam #{{#inc @index}}{{/inc}}   <span class="badge-pill badge-primary">{{examTemplate.type}} </span></h6>
+                <h3 class="mb-1">{{examTemplate.title}}</h3>
+                <p class="card-subtitle ml-1"> <small>{{examTemplate.details}}</small> </p>
+            </div>
+            <div class="card-body">
+                <h4 class="text-primary"> Questions </h4>
+                {{#each selectedQuestions}}
+                    <h5>{{#inc @index}}{{/inc}} - {{question.header}}</h5>
+
+                    {{#each answers}}
+                        <button type="button"  class="btn btn-outline-dark text-sm-left mb-1 btn-block"> {{#inc @index}}{{/inc}} - {{this}}</button>
+                    {{/each}}
+
+                    <br/>
+                {{/each}}
+            </div>
+        </div>
+        <hr/>
+    {{/each}}
+</div>
