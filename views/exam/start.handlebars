@@ -7,7 +7,7 @@
         <span class="badge  badge-light"> Duration: {{exam.duration}} Minute</span>
     </p>
     <p class="mb-0">
-        <span class="badge  badge-danger"> Duration: {{exam.deadline}} Minute</span>
+        <span class="badge  badge-danger"> Deadline: {{exam.deadline}} Minute</span>
     </p>
     <p>
         <span class="badge  badge-info  "> Number of Exams: {{exam.selectedExams.length}} </span>
@@ -31,7 +31,7 @@
                     <h5>{{#inc @index}}{{/inc}} - {{question.header}}</h5>
 
                     {{#each answers}}
-                        <button type="button"  class="btn btn-outline-dark text-sm-left mb-1 btn-block"> {{#inc @index}}{{/inc}} - {{this}}</button>
+                        <button onclick="sendAnswer(this)" type="button" data-exam_id="{{../_id}}" data-question_id="{{../question._id}}" data-answer="{{this}}" class="btn btn-outline-dark text-sm-left mb-1 btn-block"> {{#inc @index}}{{/inc}} - {{this}}</button>
                     {{/each}}
 
                     <br/>

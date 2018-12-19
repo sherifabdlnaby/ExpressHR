@@ -7,15 +7,15 @@
         <span class="badge  badge-primary"> Duration: {{exam.duration}} Minute</span>
     </p>
     <p class="mb-0">
-        <span class="badge  badge-danger"> Duration: {{exam.deadline}} Minute</span>
+        <span class="badge  badge-danger"> Deadline: {{exam.deadline}} Minute</span>
     </p>
     <p>
         <span class="badge  badge-info  "> Number of Exams: {{exam.selectedExams.length}} </span>
     </p>
 
     <form action="/exam/{{exam._id}}/start">
-    <button type="submit">Start</button>
+    <button type="submit" class="btn btn-success btn-block">Start</button>
     </form>
 
-    <p class="card-subtitle mb-2 text-muted ml-1"> <small>You can start your exam anytime before the deadline. Once Started you have only {{exam.duration}} minutes to finish it. </small> </p>
+    <p class="card-subtitle mb-2 mt-0 text-muted ml-1"> <small>* You can start your exam anytime before the deadline. Once Started you have only {{exam.duration}} minutes to finish it. </small> </p>
 </div>

@@ -54,6 +54,29 @@ router.get('/:id/start', ensureAuthenticated, async (req, res) => {
     }
 });
 
+router.post('/:id/start', ensureAuthenticated, async (req, res) => {
+    let exam = await Exam.findOne({
+        _id: req.params.id
+    })
+        .populate('job')
+        .populate('selectedExams.examTemplate')
+        .populate('selectedExams.selectedQuestions.question');
+
+    if (exam.user != req.user.id) {
+        req.flash('error_msg', 'Not Authorized.');
+        res.redirect('/');
+    } else {
+        // START EXAM
+
+
+        if(!exam.startedAt) {
+            res.json({"error": "NOT STARTED YET!"});
+        }
+
+        res.json({"msg": "ALLLLO"})
+    }
+});
+
 
 
 // Shuffle array (This should be in this file and better be sent to somewhere else but yea nvm...)
