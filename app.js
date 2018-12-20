@@ -39,6 +39,18 @@ app.engine('handlebars', exphbs({
         },
         inc: function (value, options) {
             return parseInt(value) + 1;
+        },
+        answerClasses: function (userAnswer, answer) {
+            if(userAnswer.text == answer){
+                if(userAnswer.correct)
+                    return "btn-success";
+                else
+                    return "btn-danger"
+            }
+            else return "btn-outline-dark"
+        },
+        isAnswered: function (userAnswer) {
+            return userAnswer.correct != null;
         }
     },
 }));

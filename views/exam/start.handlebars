@@ -18,12 +18,14 @@
 
 
     {{#each exam.selectedExams}}
-
         <div class="card text-dark bg-light mb-3">
             <div class="card-header">
-                <h6 class="badge badge-pill badge-light">Exam #{{#inc @index}}{{/inc}}   <span class="badge-pill badge-primary">{{examTemplate.type}} </span></h6>
+                <h6 class="badge badge-pill badge-light">Exam #{{#inc @index}}{{/inc}}   <span
+                        class="badge-pill badge-primary">{{examTemplate.type}} </span></h6>
                 <h3 class="mb-1">{{examTemplate.title}}</h3>
-                <p class="card-subtitle ml-1"> <small>{{examTemplate.details}}</small> </p>
+                <p class="card-subtitle ml-1">
+                    <small>{{examTemplate.details}}</small>
+                </p>
             </div>
             <div class="card-body">
                 <h4 class="text-primary"> Questions </h4>
@@ -31,7 +33,10 @@
                     <h5>{{#inc @index}}{{/inc}} - {{question.header}}</h5>
 
                     {{#each answers}}
-                        <button onclick="sendAnswer(this)" type="button" data-exam_id="{{../_id}}" data-question_id="{{../question._id}}" data-answer="{{this}}" class="btn btn-outline-dark text-sm-left mb-1 btn-block"> {{#inc @index}}{{/inc}} - {{this}}</button>
+                        <button onclick="sendAnswer(this)" type="button" data-exam_id="{{../../examTemplate._id}}"
+                                data-question_id="{{../question._id}}" data-answer="{{this}}"
+                                class="btn {{#answerClasses ../answer this}}{{/answerClasses}} text-sm-left mb-1 btn-block" {{#if (isAnswered ../answer)}}disabled{{/if}}> {{#inc @index}}{{/inc}}
+                            - {{this}}</button>
                     {{/each}}
 
                     <br/>
