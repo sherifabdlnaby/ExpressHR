@@ -53,10 +53,6 @@
       });
 
       function sendAnswer(answer) {
-          console.log(answer.dataset.answer);
-          console.log(answer.dataset.question_id);
-          console.log(answer.dataset.exam_id);
-
           $.ajax({
               type: "POST",
               url: '/exam/{{exam._id}}/start',
@@ -66,7 +62,6 @@
                   exam_id: answer.dataset.exam_id,
               },
               success: function (result) {
-                  console.log(result);
                   if(result.success){
                       $(answer).removeClass( "btn-outline-dark" );
 
@@ -79,6 +74,12 @@
                       }
                       else
                         $(answer).addClass( "btn-danger" );
+
+                      if(result.questions_left === 0){
+                          setTimeout(function(){ alert("Exam Finished, Results are sent to the Employer. Thank you!");
+                              window.location.replace("/"); }, 1500);
+
+                      }
                   }
               }
           });

@@ -263,7 +263,7 @@ router.post('/applicants/:id/sendexam/', ensureAuthenticated, async (req, res, d
     if (job.employer._id != req.user.id) {
         req.flash('error_msg', 'Not Authorized');
         res.redirect('/job');
-        done()
+        return done()
     }
 
     let newExam = {
@@ -271,13 +271,16 @@ router.post('/applicants/:id/sendexam/', ensureAuthenticated, async (req, res, d
         job: req.params.id,
         deadline: req.body.deadline,
         duration: req.body.duration,
-        selectedExams: []
+        selectedExams: [],
+        noOfTotalQuestions: 0,
     };
 
 
     if(! (req.body.examtemplates instanceof Array) ){
         req.body.examtemplates = [req.body.examtemplates]
     }
+
+    let noOfTotalQuestions = 0;
 
     selectedTemplates = await ExamTemplate.find( {'_id': { $in: req.body.examtemplates.map(mongoose.Types.ObjectId) }}).populate('questions');
 
@@ -296,8 +299,8 @@ router.post('/applicants/:id/sendexam/', ensureAuthenticated, async (req, res, d
                         answer: ""
                     }
                 })
-            }
-        )
+            });
+        newExam.noOfTotalQuestions+=numberOfQuestions
     });
 
     let exam = await (new Exam(newExam)).save();

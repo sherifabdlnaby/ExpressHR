@@ -17,7 +17,7 @@ const ExamTemplate = mongoose.model('examtemplate');
 router.get('/:id/view', ensureAuthenticated, async (req, res) => {
     let exam = await Exam.findOne({
         _id: req.params.id
-         })
+    })
         .populate('job');
 
     if (!exam || exam.user != req.user.id) {
@@ -41,9 +41,12 @@ router.get('/:id/start', ensureAuthenticated, async (req, res) => {
     if (!exam || exam.user != req.user.id) {
         req.flash('error_msg', 'Not Authorized');
         res.redirect('/');
+    } else if (exam.noOfTotalQuestions - exam.noOfAnsweredQuestions == 0) {
+        req.flash('error_msg', 'Exam is done and results are sent to HR.');
+        res.redirect('/');
     } else {
         // START EXAM
-        if(!exam.startedAt) {
+        if (!exam.startedAt) {
             exam.startedAt = Date.now();
             exam.save();
         }
@@ -59,6 +62,7 @@ router.post('/:id/start', ensureAuthenticated, async (req, res, next) => {
         _id: req.params.id
     })
         .populate('job')
+        .populate('job.applicants')
         .populate('selectedExams.examTemplate')
         .populate('selectedExams.selectedQuestions.question');
 
@@ -84,7 +88,7 @@ router.post('/:id/start', ensureAuthenticated, async (req, res, next) => {
 
 
         // Check If Object is not Null or Empty then return false (ALREADY ANSWERED)
-        if(!savedAnswer || Object.keys(savedAnswer.toObject()).length > 0){
+        if (!savedAnswer || Object.keys(savedAnswer.toObject()).length > 0) {
             res.json({"success": false});
             return next();
         }
@@ -92,16 +96,30 @@ router.post('/:id/start', ensureAuthenticated, async (req, res, next) => {
         // check if correct answer
         isCorrectAnswer = exam.selectedExams[selectedExamIndex].selectedQuestions[selectedExamIndex].question.correct.includes(req.body.answer);
         exam.selectedExams[selectedExamIndex].selectedQuestions[selectedQuestionIndex].answer = {
-            text:  req.body.answer,
+            text: req.body.answer,
             correct: isCorrectAnswer
         };
 
+        exam.noOfAnsweredQuestions++;
+
+        // save exam status if done
+        if (exam.noOfTotalQuestions - exam.noOfAnsweredQuestions == 0) {
+            let job = await Job.findOne({_id: exam.job._id}).populate('applicants');
+            let indexOfApplicant = exam.job.applicants.findIndex((x) => x.user == req.user.id);
+            job.applicants[indexOfApplicant].status = 'exam_done';
+            job.save();
+
+        }
+
         exam = await exam.save();
 
-        res.json({"success": true, "value" : isCorrectAnswer})
+        res.json({
+            "success": true,
+            "value": isCorrectAnswer,
+            "questions_left": exam.noOfTotalQuestions - exam.noOfAnsweredQuestions
+        })
     }
 });
-
 
 
 // Shuffle array (This should be in this file and better be sent to somewhere else but yea nvm...)
@@ -123,8 +141,6 @@ function shuffle(array) {
 
     return array;
 }
-
-
 
 
 module.exports = router;

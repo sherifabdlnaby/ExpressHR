@@ -22,6 +22,14 @@ const ExamSchema = new Schema(
             type: Number,
             default: 30
         },
+        noOfTotalQuestions : {
+            type: Number,
+            default: 0
+        },
+        noOfAnsweredQuestions : {
+            type: Number,
+            default: 0
+        },
         selectedExams: [
             {
                 examTemplate: {type: Schema.Types.ObjectId, ref: 'examtemplate'},
