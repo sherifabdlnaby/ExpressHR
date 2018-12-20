@@ -33,7 +33,9 @@ const ExamSchema = new Schema(
                             ref: 'question'
                         },
                         answers: [{type: String}],
-                        answer: {type: String}
+                        answer: {
+                            text: {type: String}
+                            , correct: {type: Boolean} }
                     }
                 ]
             }

@@ -20,7 +20,7 @@ router.get('/:id/view', ensureAuthenticated, async (req, res) => {
          })
         .populate('job');
 
-    if (exam.user != req.user.id) {
+    if (!exam || exam.user != req.user.id) {
         req.flash('error_msg', 'Not Authorized.');
         res.redirect('/');
     } else {
@@ -38,8 +38,8 @@ router.get('/:id/start', ensureAuthenticated, async (req, res) => {
         .populate('selectedExams.examTemplate')
         .populate('selectedExams.selectedQuestions.question');
 
-    if (exam.user != req.user.id) {
-        req.flash('error_msg', 'Not Authorized.');
+    if (!exam || exam.user != req.user.id) {
+        req.flash('error_msg', 'Not Authorized');
         res.redirect('/');
     } else {
         // START EXAM
@@ -54,7 +54,7 @@ router.get('/:id/start', ensureAuthenticated, async (req, res) => {
     }
 });
 
-router.post('/:id/start', ensureAuthenticated, async (req, res) => {
+router.post('/:id/start', ensureAuthenticated, async (req, res, next) => {
     let exam = await Exam.findOne({
         _id: req.params.id
     })
@@ -62,18 +62,43 @@ router.post('/:id/start', ensureAuthenticated, async (req, res) => {
         .populate('selectedExams.examTemplate')
         .populate('selectedExams.selectedQuestions.question');
 
+    let selectedExamIndex;
+    let selectedQuestionIndex;
     if (exam.user != req.user.id) {
-        req.flash('error_msg', 'Not Authorized.');
-        res.redirect('/');
+        res.json({"success": false})
     } else {
         // START EXAM
 
 
-        if(!exam.startedAt) {
+        if (!exam.startedAt) {
             res.json({"error": "NOT STARTED YET!"});
         }
 
-        res.json({"msg": "ALLLLO"})
+
+        // Get the question's exam
+        selectedExamIndex = exam.selectedExams.findIndex((x) => x.examTemplate._id == req.body.exam_id);
+
+        selectedQuestionIndex = exam.selectedExams[selectedExamIndex].selectedQuestions.findIndex((x) => x.question._id == req.body.question_id);
+
+        let savedAnswer = exam.selectedExams[selectedExamIndex].selectedQuestions[selectedQuestionIndex].answer;
+
+
+        // Check If Object is not Null or Empty then return false (ALREADY ANSWERED)
+        if(!savedAnswer || Object.keys(savedAnswer.toObject()).length > 0){
+            res.json({"success": false});
+            return next();
+        }
+
+        // check if correct answer
+        isCorrectAnswer = exam.selectedExams[selectedExamIndex].selectedQuestions[selectedExamIndex].question.correct.includes(req.body.answer);
+        exam.selectedExams[selectedExamIndex].selectedQuestions[selectedQuestionIndex].answer = {
+            text:  req.body.answer,
+            correct: isCorrectAnswer
+        };
+
+        exam = await exam.save();
+
+        res.json({"success": true, "value" : isCorrectAnswer})
     }
 });
 
