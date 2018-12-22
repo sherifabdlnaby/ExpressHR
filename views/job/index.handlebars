@@ -6,7 +6,7 @@
   <div class="card card-body mb-2">
     <h4><a href="/job/view/{{id}}">{{title}}</a></h4>
     <p>{{details}}</p>
-    <a class="btn btn-dark btn-block mb-2" href="/job/edit/{{id}}">Edit</a>
+    <a class="btn btn-dark btn-block" href="/job/edit/{{id}}">Edit</a>
     <a class="btn btn-primary btn-block mb-2" href="/job/applicants/{{id}}/view">View Applicants</a>
     <form method="post" action="/job/{{id}}?_method=DELETE">
       <input type="hidden" name="_method" value="DELETE">

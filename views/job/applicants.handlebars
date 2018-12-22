@@ -17,15 +17,15 @@
                     <h5 class="card-title">{{user.name}}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">{{user.email}}</h6>
                     <h6 class="card-subtitle mb-2 text-muted">{{user.username}}</h6>
-                    {{#if (equals status "new")}}
+                    {{#unless exam}}
                         <a href="/job/applicants/{{../job._id}}/sendexam/{{user._id}}" class="card-link">Create Exam</a>
-                    {{/if}}
-                    {{#if (equals status "exam_sent")}}
+                    {{/unless}}
+                    {{#if (equals exam.status "sent")}}
                         <a class="badge-pill badge-primary"><span class="text-white">Exam Sent To User</span></a>
                     {{/if}}
-                    {{#if (equals status "exam_done")}}
+                    {{#if (equals exam.status "done")}}
                         <a class="badge-pill badge-success"><span class="text-white">Exam Done</span></a>
-                        <a href="/job/applicants/{{../job._id}}/viewexam/{{user._id}}" class="card-link">View Result</a>
+                        <a href="/exam/{{exam._id}}/result" class="card-link">View Result</a>
                     {{/if}}
                     <br/>
                     <a href="/{{cv.path}}" class="card-link">Download CV</a>

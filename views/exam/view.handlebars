@@ -7,7 +7,7 @@
         <span class="badge  badge-primary"> Duration: {{exam.duration}} Minute</span>
     </p>
     <p class="mb-0">
-        <span class="badge  badge-danger"> Deadline: {{exam.deadline}} Minute</span>
+        <span class="badge  badge-danger"> Deadline: {{dateFormat exam.deadline "dddd, MMM Do YYYY, h:mm:ss a"}}Minute</span>
     </p>
     <p>
         <span class="badge  badge-info  "> Number of Exams: {{exam.selectedExams.length}} </span>

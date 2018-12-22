@@ -1,0 +1,86 @@
+<div class="card" style="width: 100% !important; padding: 2 !important;">
+<div class="container card-body mb-2">
+    <h6 class="mb-0">Examinee </h6>
+    <h1>{{exam.user.name}}</h1>
+    <h2>{{exam.job.title}}</h2>
+
+    <p class="mb-0">
+        <span class="badge  badge-light"> Duration: {{exam.duration}} Minute</span>
+    </p>
+    <p class="mb-0">
+        <span class="badge  badge-danger"> Deadline: {{dateFormat exam.deadline "dddd, MMM Do YYYY, h:mm:ss a"}}</span>
+    </p>
+    <p>
+        <span class="badge  badge-info  "> Number of Exams: {{exam.selectedExams.length}} </span>
+    </p>
+
+    <hr/>
+
+    <h3> Total Result </h3>
+
+    <div class="card text-white {{#if (pass correctAnswers exam.noOfTotalQuestions)}}bg-success{{else}}bg-danger{{/if}} mb-3">
+        <div class="card-header">Total Result</div>
+        <div class="card-body">
+            <h5 class="card-title mb-0">Total Correct Answers : {{correctAnswers}} / {{exam.noOfTotalQuestions}}</h5>
+            <p class="card-text mb-0">Started At  : {{dateFormat exam.startedAt "dddd, MMM Do YYYY, h:mm:ss a"}} </p>
+            <p class="card-text mb-0">Finished At : {{dateFormat exam.finishedAt "dddd, MMM Do YYYY, h:mm:ss a"}} </p>
+            <p class="card-text">Elapsed Time: {{elapsedTime}} Minute </p>
+            <table class="table table-striped  table-bordered ">
+                <thead>
+                <tr>
+                    <th scope="col">Exam</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Result</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {{#each exam.selectedExams}}
+                    <tr>
+                        <td>{{examTemplate.title}}</td>
+                        <td> <span class="badge-pill badge-primary">{{examTemplate.type}} </span></td>
+                        <td>{{correctAnswers}} / {{selectedQuestions.length}}</td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <hr/>
+
+    <br/>
+    <h3> Detailed per exam Results </h3>
+    <br/>
+    {{#each exam.selectedExams}}
+        <div class="card text-dark bg-light mb-3">
+            <div class="card-header">
+                <h6 class="badge badge-pill badge-light">Exam #{{#inc @index}}{{/inc}}   <span
+                        class="badge-pill badge-primary">{{examTemplate.type}} </span></h6>
+                <h3 class="mb-1">{{examTemplate.title}}</h3>
+                <p class="card-subtitle ml-1">
+                    <small>{{examTemplate.details}}</small>
+                </p>
+                <h4 class="mb-1"> Correct Answers: {{correctAnswers}} / {{selectedQuestions.length}}</h4>
+            </div>
+            <div class="card-body">
+                <h4 class="text-primary"> Questions </h4>
+                {{#each selectedQuestions}}
+                    <h5>{{#inc @index}}{{/inc}} - {{question.header}}</h5>
+
+                    {{#each answers}}
+                        <button onclick="sendAnswer(this)" type="button" data-exam_id="{{../../examTemplate._id}}"
+                                data-question_id="{{../question._id}}" data-answer="{{this}}"
+                                class="btn {{#answerClasses ../answer this}}{{/answerClasses}} text-sm-left mb-1 btn-block" disabled> {{#inc @index}}{{/inc}}
+                            - {{this}}</button>
+                    {{/each}}
+
+                    <br/>
+                {{/each}}
+            </div>
+        </div>
+        <hr/>
+    {{/each}}
+</div>
+</div>

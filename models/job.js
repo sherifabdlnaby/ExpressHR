@@ -24,8 +24,8 @@ const JobSchema = new Schema(
     type: [
       {
         user : { type: Schema.Types.ObjectId, ref: 'user' },
+        exam : { type: Schema.Types.ObjectId, ref: 'exam' },
         cv  : {},
-        status: { type: String, default: "new"},
       }
     ]
   },

@@ -16,6 +16,7 @@
     "express-fileupload": "^1.0.0",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.5",
+    "handlebars-dateformat": "^1.1.1",
     "method-override": "^2.3.9",
     "mongoose": "^4.11.12",
     "multer": "^1.4.1",

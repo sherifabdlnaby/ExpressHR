@@ -14,6 +14,10 @@ const ExamSchema = new Schema(
             type: Date,
             default: null
         },
+        finishedAt: {
+            type: Date,
+            default: null
+        },
         deadline: {
             type: Date,
             default: Date.now
@@ -29,6 +33,10 @@ const ExamSchema = new Schema(
         noOfAnsweredQuestions : {
             type: Number,
             default: 0
+        },
+        status: {
+            type: String,
+            default: "new",
         },
         selectedExams: [
             {

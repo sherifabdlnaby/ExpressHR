@@ -57,6 +57,49 @@ router.get('/:id/start', ensureAuthenticated, async (req, res) => {
     }
 });
 
+router.get('/:id/result', ensureAuthenticated, async (req, res, next) => {
+    let exam = await Exam.findOne({
+        _id: req.params.id
+    })
+        .populate('job')
+        .populate('job.employer')
+        .populate('selectedExams.examTemplate')
+        .populate('selectedExams.selectedQuestions.question');
+
+    if (!exam || exam.job.employer._id != req.user.id) {
+        req.flash('error_msg', 'Not Authorized');
+        res.redirect('/');
+    } else {
+        // START EXAM
+        if (!exam.startedAt) {
+            req.flash('error_msg', "User hasn't started the exam yet");
+            res.redirect('/');
+            return next();
+        }
+
+        var correctAnswers = 0;
+
+        exam.selectedExams.forEach(function (selectedExam) {
+            selectedExam.correctAnswers = 0;
+            selectedExam.selectedQuestions.forEach(function (question) {
+                if(question.answer.correct){
+                    correctAnswers++;
+                    selectedExam.correctAnswers++
+                }
+            })
+        });
+;
+
+        var elapsedTime = exam.finishedAt.getMinutes() - exam.startedAt.getMinutes() ;
+
+        res.render('exam/result', {
+            exam: exam,
+            correctAnswers: correctAnswers,
+            elapsedTime: elapsedTime
+        });
+    }
+});
+
 router.post('/:id/start', ensureAuthenticated, async (req, res, next) => {
     let exam = await Exam.findOne({
         _id: req.params.id
@@ -104,11 +147,8 @@ router.post('/:id/start', ensureAuthenticated, async (req, res, next) => {
 
         // save exam status if done
         if (exam.noOfTotalQuestions - exam.noOfAnsweredQuestions == 0) {
-            let job = await Job.findOne({_id: exam.job._id}).populate('applicants');
-            let indexOfApplicant = exam.job.applicants.findIndex((x) => x.user == req.user.id);
-            job.applicants[indexOfApplicant].status = 'exam_done';
-            job.save();
-
+            exam.status = "done";
+            exam.finishedAt = Date.now()
         }
 
         exam = await exam.save();

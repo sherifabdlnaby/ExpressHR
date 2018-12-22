@@ -90,6 +90,7 @@ router.get('/applicants/:id/view', ensureAuthenticated, (req, res) => {
     Job.findOne({
         _id: req.params.id
     }).populate('applicants.user')
+        .populate('applicants.exam')
         .then(job => {
             if (job.employer._id != req.user.id) {
                 req.flash('error_msg', 'Not Authorized');
@@ -182,7 +183,6 @@ router.post('/apply', ensureAuthenticated, uploadCv.single('cv'), (req, res, don
                 } else {
                     job.applicants.push({
                         user: req.user._id,
-                        status: "new",
                         cv: {
                             path: req.file.path.slice(7),
                             size: req.file.size,
@@ -195,7 +195,7 @@ router.post('/apply', ensureAuthenticated, uploadCv.single('cv'), (req, res, don
                 }
             }
         }).catch(err => {
-            console.log(err)
+            console.log(err);
         req.flash('error_msg', 'Something Wrong Happened');
         res.redirect('/job/view/' + req.body.id);
     })
@@ -271,6 +271,7 @@ router.post('/applicants/:id/sendexam/', ensureAuthenticated, async (req, res, d
         job: req.params.id,
         deadline: req.body.deadline,
         duration: req.body.duration,
+        status: "sent",
         selectedExams: [],
         noOfTotalQuestions: 0,
     };
@@ -307,7 +308,7 @@ router.post('/applicants/:id/sendexam/', ensureAuthenticated, async (req, res, d
 
     applicantIndex = job.applicants.findIndex(applicant => applicant.user._id == req.body.applicant_id);
 
-    job.applicants[applicantIndex].status = "exam_sent";
+    job.applicants[applicantIndex].exam = exam;
 
     job = await job.save();
 
