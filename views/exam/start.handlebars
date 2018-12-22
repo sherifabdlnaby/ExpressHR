@@ -4,10 +4,10 @@
     <h2>{{exam.job.title}}</h2>
 
     <p class="mb-0">
-        <span class="badge  badge-light"> Duration: {{exam.duration}} Minute</span>
+        <span class="badge  badge-light"> <i class="fas fa-clock"></i> Duration: {{exam.duration}} Minute</span>
     </p>
     <p class="mb-0">
-        <span class="badge  badge-danger"> Deadline: {{dateFormat exam.deadline "dddd, MMM Do YYYY, h:mm:ss a"}} </span>
+        <span class="badge  badge-danger"> <i class="fas fa-calendar"></i> Deadline: {{dateFormat exam.deadline "dddd, MMM Do YYYY, h:mm:ss a"}} </span>
     </p>
     <p>
         <span class="badge  badge-info  "> Number of Exams: {{exam.selectedExams.length}} </span>

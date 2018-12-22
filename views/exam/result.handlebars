@@ -5,10 +5,10 @@
     <h2>{{exam.job.title}}</h2>
 
     <p class="mb-0">
-        <span class="badge  badge-light"> Duration: {{exam.duration}} Minute</span>
+        <span class="badge  badge-light"> <i class="fas fa-clock"></i> Duration: {{exam.duration}} Minute</span>
     </p>
     <p class="mb-0">
-        <span class="badge  badge-danger"> Deadline: {{dateFormat exam.deadline "dddd, MMM Do YYYY, h:mm:ss a"}}</span>
+        <span class="badge  badge-danger"> <i class="fas fa-calendar"></i> Deadline: {{dateFormat exam.deadline "dddd, MMM Do YYYY, h:mm:ss a"}}</span>
     </p>
     <p>
         <span class="badge  badge-info  "> Number of Exams: {{exam.selectedExams.length}} </span>
@@ -21,10 +21,10 @@
     <div class="card text-white {{#if (pass correctAnswers exam.noOfTotalQuestions)}}bg-success{{else}}bg-danger{{/if}} mb-3">
         <div class="card-header">Total Result</div>
         <div class="card-body">
-            <h5 class="card-title mb-0">Total Correct Answers : {{correctAnswers}} / {{exam.noOfTotalQuestions}}</h5>
-            <p class="card-text mb-0">Started At  : {{dateFormat exam.startedAt "dddd, MMM Do YYYY, h:mm:ss a"}} </p>
-            <p class="card-text mb-0">Finished At : {{dateFormat exam.finishedAt "dddd, MMM Do YYYY, h:mm:ss a"}} </p>
-            <p class="card-text">Elapsed Time: {{elapsedTime}} Minute </p>
+            <h5 class="card-title mb-0">  {{#if (pass correctAnswers exam.noOfTotalQuestions)}}<i class="fas fa-check"></i>{{else}}<i class="fas fa-times"></i>{{/if}} Total Correct Answers : {{correctAnswers}} / {{exam.noOfTotalQuestions}}</h5>
+            <p class="card-text mb-0"><i class="fas fa-calendar"></i> Started At  : {{dateFormat exam.startedAt "dddd, MMM Do YYYY, h:mm:ss a"}} </p>
+            <p class="card-text mb-0"><i class="fas fa-calendar"></i> Finished At : {{dateFormat exam.finishedAt "dddd, MMM Do YYYY, h:mm:ss a"}} </p>
+            <p class="card-text"><i class="fas fa-hourglass-end"></i> Elapsed Time: {{elapsedTime}} Minute </p>
             <table class="table table-striped  table-bordered ">
                 <thead>
                 <tr>

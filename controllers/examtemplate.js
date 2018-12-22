@@ -113,6 +113,7 @@ router.post('/:id/addquestion', ensureAuthenticated, (req, res) => {
     }
 });
 
+// TODO validate empty question
 
 // View ExamTemplate
 // Job Index Page

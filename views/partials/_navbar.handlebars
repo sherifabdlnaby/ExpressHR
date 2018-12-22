@@ -8,7 +8,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="/">Home</a>
+          <a class="nav-link" href="/"> <i class="fas fa-home"></i> Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/about">About</a>
@@ -17,16 +17,16 @@
       <ul class="navbar-nav ml-auto">
         {{#if user}}
           <li class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="navbarDropdownMenuLink">{{user.name}}</a>
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="navbarDropdownMenuLink"><i class="fas fa-user"></i> {{user.name}}</a>
             <div class="dropdown-menu">
-                <a href="/job/add" class="dropdown-item">Post Job</a>
-                <a href="/job/myjobs" class="dropdown-item">Posted Jobs</a>
-                <a href="/examtemplate/add" class="dropdown-item">Add Exam Template</a>
-                <a href="/examtemplate/" class="dropdown-item">Show Exam Templates</a>
+                <a href="/job/add" class="dropdown-item"> <i class="fas fa-pencil-alt"></i> Post Job Opening</a>
+                <a href="/job/myjobs" class="dropdown-item"> <i class="fas fa-scroll"></i> Posted Jobs</a>
+                <a href="/examtemplate/add" class="dropdown-item"> <i class="fas fa-plus"></i> Add Exam Template</a>
+                <a href="/examtemplate/" class="dropdown-item"> <i class="fas fa-sticky-note"></i> Show Exam Templates</a>
             </div>
           </li>
           <li class="nav-item">
-            <a href="/users/logout" class="nav-link">Logout</a>
+            <a href="/users/logout" class="nav-link"> <i class="fas fa-sign-out-alt"></i> Logout</a>
           </li>
         {{else}}
           <li class="nav-item">
