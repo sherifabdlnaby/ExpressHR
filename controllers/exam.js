@@ -12,6 +12,15 @@ const Job = mongoose.model('job');
 const Exam = mongoose.model('exam');
 const ExamTemplate = mongoose.model('examtemplate');
 
+router.get('/myexams', ensureAuthenticated, (req, res) => {
+    Exam.find({'user': req.user.id})
+        .sort({createdAt: 'desc'}).populate("job").populate("")
+        .then(exams => {
+            res.render('exam/myexams', {
+                exams: exams
+            });
+        });
+});
 
 // View Exam Form
 router.get('/:id/view', ensureAuthenticated, async (req, res) => {

@@ -1,0 +1,32 @@
+<div class="card card-body">
+    <h3 class="test-muted">Your due exams</h3>
+    <div class="contatiner-fluid mb-3 p-2">
+        <div class="row">
+            {{#each exams}}
+                <div class="col-lg-4 p-2 pt-1 ">
+                    <div class="card card-body mb-2  h-100 border border-primary">
+                        <h5> Job: {{job.title}}</h5>
+
+                        <p class="mb-0">
+                            <span class="badge  badge-primary"> Duration: {{duration}} Minute</span>
+                        </p>
+                        <p class="mb-0">
+                            <span class="badge  badge-danger"> Deadline: {{dateFormat deadline "dddd, MMM Do YYYY, h:mm:ss a"}}</span>
+                        </p>
+                        <p class="mb-0">
+                            <span class="badge  badge-warning  "> Number of Exams: {{selectedExams.length}} </span>
+                        </p>
+                        <p>
+                            <span class="badge  badge-info  "> Number of Total Questions: {{noOfTotalQuestions}} </span>
+                        </p>
+
+                        <a class="btn btn-primary btn-block " href="/exam/{{id}}/view">Start</a>
+                    </div>
+                </div>
+            {{else}}
+                <p>No Exams, Once an HR send you an exam it will appear here.</p>
+
+            {{/each}}
+        </div>
+    </div>
+</div>
