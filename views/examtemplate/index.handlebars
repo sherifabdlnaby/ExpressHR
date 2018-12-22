@@ -4,10 +4,11 @@
     <h5 class="card-subtitle mb-2 text-muted">{{examtemplates.length}} Exam Template </h5>
 
     <br/>
-    <div class="card-deck mb-3">
+        <div class="contatiner-fluid mb-3 p-2">
+            <div class="row">
     {{#each examtemplates}}
-        <div class="card mb-3 border-primary">
-            <div class="card-body">
+        <div class="col-lg-4 p-2 pt-1 ">
+            <div class="card card-body mb-2  h-100 border border-primary">
                 <h5 class="card-title"><a href="/examtemplate/view/{{_id}}">{{title}}</a></h5>
                 <h6 class="card-subtitle mb-3 text-muted">{{details}}</h6>
                 <h6 class="card-subtitle mb-2 text-muted"><span class="text-dark">Type:</span> {{type}}</h6>
@@ -19,6 +20,7 @@
     {{else}}
         <h2>No Exam Templates.</h2>
     {{/each}}
+    </div>
     </div>
 </div>
 </div>

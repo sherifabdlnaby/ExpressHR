@@ -25,11 +25,21 @@ const Exam = mongoose.model('exam');
 const ExamTemplate = mongoose.model('examtemplate');
 
 // Job Index Page
-router.get('/', ensureAuthenticated, (req, res) => {
-    Job.find({'employer._id': req.user.id})
+router.get('/', (req, res) => {
+    Job.find()
         .sort({createdAt: 'desc'})
         .then(jobs => {
             res.render('job/index', {
+                jobs: jobs
+            });
+        });
+});
+
+router.get('/myjobs', ensureAuthenticated, (req, res) => {
+    Job.find({'employer._id': req.user.id})
+        .sort({createdAt: 'desc'})
+        .then(jobs => {
+            res.render('job/userjobs', {
                 jobs: jobs
             });
         });

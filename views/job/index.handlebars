@@ -1,21 +1,23 @@
 <div class="card card-body">
     <h3 class="test-muted">Posted Jobs</h3>
-    <br/>
-<div class="card-deck mb-3">
-{{#each jobs}}
-  <div class="card card-body mb-2">
-    <h4><a href="/job/view/{{id}}">{{title}}</a></h4>
-    <p>{{details}}</p>
-    <a class="btn btn-dark btn-block" href="/job/edit/{{id}}">Edit</a>
-    <a class="btn btn-primary btn-block mb-2" href="/job/applicants/{{id}}/view">View Applicants</a>
-    <form method="post" action="/job/{{id}}?_method=DELETE">
-      <input type="hidden" name="_method" value="DELETE">
-      <input type="submit" class="btn btn-danger btn-block" value="Delete">
-    </form>
-  </div>
-{{else}}
-  <p>No jobs posted</p>
-{{/each}}
+    <div class="contatiner-fluid mb-3 p-2">
+        <div class="row">
+            {{#each jobs}}
+            <div class="col-lg-4 p-2 pt-1 ">
+                <div class="card card-body mb-2  h-100 border border-primary">
+                    <h4><a href="/job/view/{{id}}">{{title}}</a></h4>
+                    <p>{{details}}</p>
 
-</div>
+                    <h5>{{applicants.length}} Applicants </h5>
+                    <p class="mb-0"> Employer: {{employer.name}}
+                    <p> Email: <span class="text-secondary"> {{employer.email}} </span></p>
+                    <a href="/job/apply/{{_id}}" class="btn btn-success btn-lg">Apply</a>
+                </div>
+            </div>
+            {{else}}
+                <p>No jobs posted</p>
+
+            {{/each}}
+        </div>
+    </div>
 </div>

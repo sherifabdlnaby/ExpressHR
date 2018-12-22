@@ -1,0 +1,24 @@
+<div class="card card-body">
+    <h3 class="test-muted">Posted Jobs</h3>
+    <div class="contatiner-fluid mb-3 p-2">
+        <div class="row">
+            {{#each jobs}}
+                <div class="col-lg-4 p-2 pt-1 ">
+                    <div class="card card-body mb-2  h-100 border border-primary">
+                        <h4><a href="/job/view/{{id}}">{{title}}</a></h4>
+                        <p>{{details}}</p>
+                        <a class="btn btn-primary btn-block " href="/job/applicants/{{id}}/view">View Applicants</a>
+                        <a class="btn btn-dark btn-block mb-2" href="/job/edit/{{id}}">Edit</a>
+                        <form method="post" action="/job/{{id}}?_method=DELETE">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="submit" class="btn btn-danger btn-block" value="Delete">
+                        </form>
+                    </div>
+                </div>
+            {{else}}
+                <p>No jobs posted</p>
+
+            {{/each}}
+        </div>
+    </div>
+</div>
