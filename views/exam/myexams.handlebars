@@ -1,11 +1,12 @@
 <div class="card card-body">
+    <div class="container">
     <h3 class="test-muted">Your due exams</h3>
     <div class="contatiner-fluid mb-3 p-2">
         <div class="row">
-            {{#each exams}}
+            {{#each dueExams}}
                 <div class="col-lg-4 p-2 pt-1 ">
                     <div class="card card-body mb-2  h-100 border border-primary">
-                        <h5> Job: {{job.title}}</h5>
+                        <h5> Job:  <br/><a href="/job/view/{{job._id}}">{{job.title}}</a> </h5>
 
                         <p class="mb-0">
                             <span class="badge  badge-primary"> Duration: {{duration}} Minute</span>
@@ -28,5 +29,38 @@
 
             {{/each}}
         </div>
+    </div>
+    <hr/>
+    <h3 class="test-muted">Your past exams</h3>
+    <div class="contatiner-fluid mb-3 p-2">
+        <div class="row">
+            {{#each doneExams}}
+                <div class="col-lg-4 p-2 pt-1 ">
+                    <div class="card card-body mb-2  bg-light h-100 border border-primary">
+                        <h5> Job:  <br/><a href="/job/view/{{job._id}}">{{job.title}}</a> </h5>
+
+                        <p class="mb-0">
+                            <span class="badge  badge-primary"> Duration: {{duration}} Minute</span>
+                        </p>
+                        <p class="mb-0">
+                            <span class="badge  badge-danger"> Deadline: {{dateFormat deadline "dddd, MMM Do YYYY, h:mm:ss a"}}</span>
+                        </p>
+                        <p class="mb-0">
+                            <span class="badge  badge-warning  "> Number of Exams: {{selectedExams.length}} </span>
+                        </p>
+                        <p>
+                            <span class="badge  badge-info  "> Number of Total Questions: {{noOfTotalQuestions}} </span>
+                        </p>
+                        <span class="badge  badge-success  mb-1">Started At  : {{dateFormat exam.startedAt "ddd, MMM Do YYYY, h:mm:ss a"}} </span>
+                            <span class="badge  badge-primary  mb-2">Finished At : {{dateFormat exam.finishedAt "ddd, MMM Do YYYY, h:mm:ss a"}} </span>
+
+                    </div>
+                </div>
+            {{else}}
+                <p>No Exams, Once an HR send you an exam it will appear here.</p>
+
+            {{/each}}
+        </div>
+    </div>
     </div>
 </div>

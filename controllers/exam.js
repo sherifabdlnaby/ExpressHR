@@ -12,14 +12,17 @@ const Job = mongoose.model('job');
 const Exam = mongoose.model('exam');
 const ExamTemplate = mongoose.model('examtemplate');
 
-router.get('/myexams', ensureAuthenticated, (req, res) => {
-    Exam.find({'user': req.user.id})
-        .sort({createdAt: 'desc'}).populate("job").populate("")
-        .then(exams => {
-            res.render('exam/myexams', {
-                exams: exams
-            });
-        });
+router.get('/myexams', ensureAuthenticated, async (req, res) => {
+
+    let dueExams = await Exam.find({'user': req.user.id, 'status': 'sent'})
+        .sort({createdAt: 'desc'}).populate("job");
+    let doneExams = await Exam.find({'user': req.user.id, 'status': 'done'})
+        .sort({createdAt: 'desc'}).populate("job");
+
+    res.render('exam/myexams', {
+        dueExams: dueExams,
+        doneExams: doneExams,
+    });
 });
 
 // View Exam Form

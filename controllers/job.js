@@ -322,7 +322,7 @@ router.post('/applicants/:id/sendexam/', ensureAuthenticated, async (req, res, d
 
     job = await job.save();
 
-    req.flash('success_msg', 'Exam Sent to User. ##TODO SEND MAIL, VIEW APPLICANT STATUS');
+    req.flash('success_msg', 'Exam Sent to User. ##TODO SEND MAIL'); //TODO Send Mail
     res.redirect('/job/applicants/' + req.params.id + '/view');
 });
 
