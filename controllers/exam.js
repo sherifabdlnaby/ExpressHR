@@ -26,7 +26,7 @@ router.get('/myexams', ensureAuthenticated, async (req, res) => {
 });
 
 // View Exam Form
-router.get('/:id/view', ensureAuthenticated, async (req, res) => {
+router.get('/:id/view', ensureAuthenticated, async (req, res, next) => {
     let exam = await Exam.findOne({
         _id: req.params.id
     })
@@ -36,13 +36,23 @@ router.get('/:id/view', ensureAuthenticated, async (req, res) => {
         req.flash('error_msg', 'Not Authorized.');
         res.redirect('/');
     } else {
+
+        // Check Remaining Time
+        var remaningTime = Math.min((exam.deadline.getTime() - Date.now()), (exam.startedAt.getTime() + exam.duration*60*1000) - Date.now())/1000 ;
+        remaningTime = Math.max(remaningTime, 0);
+        if (remaningTime <= 0){
+            req.flash('error_msg', 'Exam is Over.');
+            res.redirect('/');
+            return next();
+        }
+
         res.render('exam/view', {
             exam: exam
         });
     }
 });
 
-router.get('/:id/start', ensureAuthenticated, async (req, res) => {
+router.get('/:id/start', ensureAuthenticated, async (req, res, next) => {
     let exam = await Exam.findOne({
         _id: req.params.id
     })
@@ -53,25 +63,36 @@ router.get('/:id/start', ensureAuthenticated, async (req, res) => {
     if (!exam || exam.user != req.user.id) {
         req.flash('error_msg', 'Not Authorized');
         res.redirect('/');
-    } else if (exam.noOfTotalQuestions - exam.noOfAnsweredQuestions == 0) {
+        return next();
+    }
+
+    // START EXAM
+    if (!exam.startedAt) {
+        exam.startedAt = Date.now();
+        exam.save();
+    }
+
+    if (exam.noOfTotalQuestions - exam.noOfAnsweredQuestions == 0) {
         req.flash('error_msg', 'Exam is done and results are sent to HR.');
         res.redirect('/');
-    } else {
-        // START EXAM
-        if (!exam.startedAt) {
-            exam.startedAt = Date.now();
-            exam.save();
-        }
-        // TODO CHECK DEADLINE AND STUFF
-
-        var remaningTime = Math.min((exam.deadline.getTime() - Date.now()), (exam.startedAt.getTime() + exam.duration*60*1000) - Date.now())/1000 ;
-        remaningTime = Math.max(remaningTime, 0);
-
-        res.render('exam/start', {
-            exam: exam,
-            remaningTime: remaningTime
-        });
+        return next();
     }
+
+    // Check Remaining Time
+    var remaningTime = Math.min((exam.deadline.getTime() - Date.now()), (exam.startedAt.getTime() + exam.duration*60*1000) - Date.now())/1000 ;
+    remaningTime = Math.max(remaningTime, 0);
+
+    if (remaningTime <= 0){
+        req.flash('error_msg', 'Exam is Over.');
+        res.redirect('/');
+        return next();
+    }
+
+    res.render('exam/start', {
+        exam: exam,
+        remaningTime: remaningTime
+    });
+
 });
 
 router.get('/:id/result', ensureAuthenticated, async (req, res, next) => {
@@ -126,58 +147,66 @@ router.post('/:id/start', ensureAuthenticated, async (req, res, next) => {
         .populate('selectedExams.examTemplate')
         .populate('selectedExams.selectedQuestions.question');
 
-    let selectedExamIndex;
-    let selectedQuestionIndex;
+
     if (exam.user != req.user.id) {
         res.json({"success": false})
-    } else {
-        // START EXAM
-
-
-        if (!exam.startedAt) {
-            res.json({"error": "NOT STARTED YET!"});
-        }
-
-
-        // Get the question's exam
-        selectedExamIndex = exam.selectedExams.findIndex((x) => x.examTemplate._id == req.body.exam_id);
-
-        exam.selectedExams[selectedExamIndex].started = true;
-
-        selectedQuestionIndex = exam.selectedExams[selectedExamIndex].selectedQuestions.findIndex((x) => x.question._id == req.body.question_id);
-
-        let savedAnswer = exam.selectedExams[selectedExamIndex].selectedQuestions[selectedQuestionIndex].answer;
-
-
-        // Check If Object is not Null or Empty then return false (ALREADY ANSWERED)
-        if (!savedAnswer || Object.keys(savedAnswer.toObject()).length > 0) {
-            res.json({"success": false});
-            return next();
-        }
-
-        // check if correct answer
-        isCorrectAnswer = exam.selectedExams[selectedExamIndex].selectedQuestions[selectedExamIndex].question.correct.includes(req.body.answer);
-        exam.selectedExams[selectedExamIndex].selectedQuestions[selectedQuestionIndex].answer = {
-            text: req.body.answer,
-            correct: isCorrectAnswer
-        };
-
-        exam.noOfAnsweredQuestions++;
-
-        // save exam status if done
-        if (exam.noOfTotalQuestions - exam.noOfAnsweredQuestions == 0) {
-            exam.status = "done";
-            exam.finishedAt = Date.now()
-        }
-
-        exam = await exam.save();
-
-        res.json({
-            "success": true,
-            "value": isCorrectAnswer,
-            "questions_left": exam.noOfTotalQuestions - exam.noOfAnsweredQuestions
-        })
+        next()
     }
+
+    if (!exam.startedAt) {
+        res.json({"error": "NOT STARTED YET!"});
+    }
+
+    // Check Remaining Time
+    var remaningTime = Math.min((exam.deadline.getTime() - Date.now()), (exam.startedAt.getTime() + exam.duration*60*1000) - Date.now())/1000 ;
+    remaningTime = Math.max(remaningTime, 0);
+    if (remaningTime <= 0){
+        res.json({"error": "EXAM OVER!"});
+        return next();
+    }
+
+
+    let selectedExamIndex;
+    let selectedQuestionIndex;
+
+    // Get the question's exam
+    selectedExamIndex = exam.selectedExams.findIndex((x) => x.examTemplate._id == req.body.exam_id);
+
+    exam.selectedExams[selectedExamIndex].started = true;
+
+    selectedQuestionIndex = exam.selectedExams[selectedExamIndex].selectedQuestions.findIndex((x) => x.question._id == req.body.question_id);
+
+    let savedAnswer = exam.selectedExams[selectedExamIndex].selectedQuestions[selectedQuestionIndex].answer;
+
+
+    // Check If Object is not Null or Empty then return false (ALREADY ANSWERED)
+    if (!savedAnswer || Object.keys(savedAnswer.toObject()).length > 0) {
+        res.json({"success": false});
+        return next();
+    }
+
+    // check if correct answer
+    isCorrectAnswer = exam.selectedExams[selectedExamIndex].selectedQuestions[selectedExamIndex].question.correct.includes(req.body.answer);
+    exam.selectedExams[selectedExamIndex].selectedQuestions[selectedQuestionIndex].answer = {
+        text: req.body.answer,
+        correct: isCorrectAnswer
+    };
+
+    exam.noOfAnsweredQuestions++;
+
+    // save exam status if done
+    if (exam.noOfTotalQuestions - exam.noOfAnsweredQuestions == 0) {
+        exam.status = "done";
+        exam.finishedAt = Date.now()
+    }
+
+    exam = await exam.save();
+
+    res.json({
+        "success": true,
+        "value": isCorrectAnswer,
+        "questions_left": exam.noOfTotalQuestions - exam.noOfAnsweredQuestions
+    })
 });
 
 
