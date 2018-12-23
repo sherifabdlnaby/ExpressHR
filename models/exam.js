@@ -41,6 +41,7 @@ const ExamSchema = new Schema(
         selectedExams: [
             {
                 examTemplate: {type: Schema.Types.ObjectId, ref: 'examtemplate'},
+                started: {type: Boolean, default: false},
                 selectedQuestions:
                 [
                     {

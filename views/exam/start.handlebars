@@ -7,12 +7,17 @@
         <span class="badge  badge-light"> <i class="fas fa-clock"></i> Duration: {{exam.duration}} Minute</span>
     </p>
     <p class="mb-0">
-        <span class="badge  badge-danger"> <i class="fas fa-calendar"></i> Deadline: {{dateFormat exam.deadline "dddd, MMM Do YYYY, h:mm:ss a"}} </span>
+        <span class="badge  badge-danger"> <i class="fas fa-calendar"></i> Deadline: {{dateFormat exam.deadline
+                                                                                                  "dddd, MMM Do YYYY, h:mm:ss a"}} </span>
     </p>
     <p>
         <span class="badge  badge-info  "> Number of Exams: {{exam.selectedExams.length}} </span>
     </p>
 
+
+    <div align="center">
+    <div class="your-clock" id="your-clock" style="width: 50%"></div>
+    </div>
 
     <hr/>
 
@@ -23,24 +28,34 @@
                 <h6 class="badge badge-pill badge-light">Exam #{{#inc @index}}{{/inc}}   <span
                         class="badge-pill badge-primary">{{examTemplate.type}} </span></h6>
                 <h3 class="mb-1">{{examTemplate.title}}</h3>
-                <p class="card-subtitle ml-1">
+                <p class="card-subtitle ml-1 mb-2">
                     <small>{{examTemplate.details}}</small>
                 </p>
+                <h5 class="mb-1">Questions: {{selectedQuestions.length}}</h5>
+                {{#unless started}}
+                <button type="button" class="btn btn-success btn-block" onclick="startExam(this, '{{examTemplate._id}}')"
+                        >Start Solving Exam #{{#inc @index}}{{/inc}}
+                </button>
+                {{/unless}}
             </div>
-            <div class="card-body">
-                <h4 class="text-primary"> Questions </h4>
-                {{#each selectedQuestions}}
-                    <h5>{{#inc @index}}{{/inc}} - {{question.header}}</h5>
+            <div data-exam_template_id="{{examTemplate._id}}" {{#unless started}}hidden{{/unless}}>
+                <div class="card-body">
+                    <h4 class="text-primary"> Questions </h4>
+                    {{#each selectedQuestions}}
+                        <h5>{{#inc @index}}{{/inc}} - {{question.header}}</h5>
 
-                    {{#each answers}}
-                        <button onclick="sendAnswer(this)" type="button" data-exam_id="{{../../examTemplate._id}}"
-                                data-question_id="{{../question._id}}" data-answer="{{this}}"
-                                class="btn {{#answerClasses ../answer this}}{{/answerClasses}} text-sm-left mb-1 btn-block" {{#if (isAnswered ../answer)}}disabled{{/if}}> {{#inc @index}}{{/inc}}
-                            - {{this}}</button>
+                        {{#each answers}}
+                            <button onclick="sendAnswer(this)" type="button" data-exam_id="{{../../examTemplate._id}}"
+                                    data-question_id="{{../question._id}}" data-answer="{{this}}"
+                                    class="btn {{#answerClasses ../answer
+                                                                this}}{{/answerClasses}} text-sm-left mb-1 btn-block"
+                                    {{#if (isAnswered ../answer)}}disabled{{/if}}> {{#inc @index}}{{/inc}}
+                                - {{this}}</button>
+                        {{/each}}
+
+                        <br/>
                     {{/each}}
-
-                    <br/>
-                {{/each}}
+                </div>
             </div>
         </div>
         <hr/>

@@ -63,8 +63,13 @@ router.get('/:id/start', ensureAuthenticated, async (req, res) => {
             exam.save();
         }
         // TODO CHECK DEADLINE AND STUFF
+
+        var remaningTime = Math.min((exam.deadline.getTime() - Date.now()), (exam.startedAt.getTime() + exam.duration*60*1000) - Date.now())/1000 ;
+        remaningTime = Math.max(remaningTime, 0);
+
         res.render('exam/start', {
-            exam: exam
+            exam: exam,
+            remaningTime: remaningTime
         });
     }
 });
@@ -136,6 +141,8 @@ router.post('/:id/start', ensureAuthenticated, async (req, res, next) => {
 
         // Get the question's exam
         selectedExamIndex = exam.selectedExams.findIndex((x) => x.examTemplate._id == req.body.exam_id);
+
+        exam.selectedExams[selectedExamIndex].started = true;
 
         selectedQuestionIndex = exam.selectedExams[selectedExamIndex].selectedQuestions.findIndex((x) => x.question._id == req.body.question_id);
 

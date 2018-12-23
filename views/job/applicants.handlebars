@@ -22,11 +22,11 @@
                         <a href="/job/applicants/{{../job._id}}/sendexam/{{user._id}}" class="card-link mb-0"> <i class="fas fa-plus"></i> Create Exam</a>
                     {{/unless}}
                     {{#if (equals exam.status "sent")}}
-                        <a class="badge-pill badge-primary"><span class="text-white mb-0"><i class="fas fa-envelope"></i>Exam Sent To User</span></a>
+                        <a class="badge-pill badge-primary"><span class="text-white mb-1"><i class="fas fa-envelope"></i> Exam Sent To User</span></a>
                     {{/if}}
                     {{#if (equals exam.status "done")}}
-                        <a class="badge-pill badge-success"><span class="text-white mb-0"><i class="fas fa-check"></i> Exam Done</span></a>
-                        <a href="/exam/{{exam._id}}/result" class="card-link mb-0"> <i class="fas fa-eye"></i> View Result</a>
+                        <a class="badge-pill badge-success"><span class="text-white mb-1"><i class="fas fa-check"></i> Exam Done</span></a>
+                        <a href="/exam/{{exam._id}}/result" class="card-link mb-1"> <i class="fas fa-eye"></i> View Result</a>
                     {{/if}}
                     <a href="/{{cv.path}}" class="card-link ml-0 mb-0"> <i class="fas fa-download"></i> Download CV</a>
                     <br/>

@@ -291,14 +291,12 @@ router.post('/applicants/:id/sendexam/', ensureAuthenticated, async (req, res, d
         req.body.examtemplates = [req.body.examtemplates]
     }
 
-    let noOfTotalQuestions = 0;
-
     selectedTemplates = await ExamTemplate.find( {'_id': { $in: req.body.examtemplates.map(mongoose.Types.ObjectId) }}).populate('questions');
 
     selectedTemplates.forEach(function (template) {
         let N = template.questions.length;
         let numberOfQuestions = Math.floor(Math.random() * (N - 1)) + 1;
-        let questions = shuffle(template.questions).slice(0, numberOfQuestions);
+        let questions = shuffle(template.questions).slice(0, Math.max(numberOfQuestions, Math.min(3, N)));
         newExam.selectedExams.push({
                 examTemplate: template._id,
                 selectedQuestions: questions.map(function (question) {
@@ -311,7 +309,7 @@ router.post('/applicants/:id/sendexam/', ensureAuthenticated, async (req, res, d
                     }
                 })
             });
-        newExam.noOfTotalQuestions+=numberOfQuestions
+        newExam.noOfTotalQuestions+=questions.length
     });
 
     let exam = await (new Exam(newExam)).save();
