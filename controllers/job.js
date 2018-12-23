@@ -264,6 +264,8 @@ router.get('/applicants/:id/sendexam/:applicant_id', ensureAuthenticated, (req, 
     });
 });
 
+
+
 router.post('/applicants/:id/sendexam/', ensureAuthenticated, async (req, res, done) => {
 
     job = await Job.findOne({_id: req.params.id}).populate('applicants.user');
@@ -320,6 +322,10 @@ router.post('/applicants/:id/sendexam/', ensureAuthenticated, async (req, res, d
 
     job = await job.save();
 
+    // SEND MAIL
+
+    SendExamMail(exam, job);
+
     req.flash('success_msg', 'Exam Sent to User. ##TODO SEND MAIL'); //TODO Send Mail
     res.redirect('/job/applicants/' + req.params.id + '/view');
 });
@@ -344,6 +350,43 @@ function shuffle(array) {
     }
 
     return array;
+}
+
+function SendExamMail(exam, job) {
+// TO TEST GMAIL
+    // And also pass ENV vars when running app
+    // ` > GMAILPASSWORD={{PASSWORD}} node app.js `
+    // 1- https://accounts.google.com/b/0/DisplayUnlockCaptcha
+    // 2- https://myaccount.google.com/lesssecureapps
+    var nodemailer = require('nodemailer');
+    let transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        requireTLS: true,
+        auth: {
+            user: 'sherifabdlnaby@gmail.com',
+            pass: process.env.GMAILPASSWORD
+        }
+    });
+
+    let Email = {
+        from: '"ExpressHR - Sherif Abdel-Naby" <sherifabdlnaby@gmail.com>',
+        to: 'sherifabdlnaby@gmail.com',
+        subject: "Application Filtration Exam for Job: " + job.title,
+        text: "Congrats, You've been shortlisted for the job \"" + job.title + "\", You'll need to pass an Exam to proceed, " +
+            "You can start the exam anytime before the deadline: " + exam.deadline + " , The Exam duration is " + exam.duration  +
+            "Minutes.  To View Exam please go to http://localhost:5000/exam/" + exam._id + "/view"
+    };
+
+    transporter.sendMail(Email, (error, info) => {
+        // for debugging
+        if (error) {
+            return console.log(error);
+        }
+        console.log("The message was sent!");
+        console.log(info);
+    });
 }
 
 module.exports = router;

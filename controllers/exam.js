@@ -36,9 +36,8 @@ router.get('/:id/view', ensureAuthenticated, async (req, res, next) => {
         req.flash('error_msg', 'Not Authorized.');
         res.redirect('/');
     } else {
-
-        // Check Remaining Time
-        var remaningTime = Math.min((exam.deadline.getTime() - Date.now()), (exam.startedAt.getTime() + exam.duration*60*1000) - Date.now())/1000 ;
+         // Check Remaining Time
+        var remaningTime = (exam.deadline.getTime() - Date.now())/1000 ;
         remaningTime = Math.max(remaningTime, 0);
         if (remaningTime <= 0){
             req.flash('error_msg', 'Exam is Over.');
@@ -126,7 +125,7 @@ router.get('/:id/result', ensureAuthenticated, async (req, res, next) => {
                 }
             })
         });
-;
+
 
         var elapsedTime = exam.finishedAt.getMinutes() - exam.startedAt.getMinutes() ;
 

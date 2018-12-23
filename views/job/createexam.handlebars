@@ -15,7 +15,7 @@
 
 
         <div class="form-group">
-        <select multiple="multiple" id="my-select" name="examtemplates" REQUIRED>
+        <select multiple="multiple" id="my-select" name="examtemplates" data-validation="required">
             {{#each examtemplates}}
                 <option value='{{_id}}'>{{title}} : {{type}}</option>
             {{/each}}
