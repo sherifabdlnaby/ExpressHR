@@ -77,13 +77,40 @@ router.post('/register', (req, res) => {
                   })
                 })
                 .catch(err => {
-                  console.log(err);
                   return;
                 });
             });
           });
         }
       });
+  }
+});
+
+router.post('/checkUsername/', async (req, res) => {
+  let user = await User.findOne( {username: req.body.username} );
+  if(user){
+    res.json({
+      "valid" : false,
+      "message" : "Username Already Exists"
+    })
+  } else {
+    res.json({
+      "valid" : true
+    })
+  }
+});
+
+router.post('/checkEmail/', async (req, res) => {
+  let user = await User.findOne( {email: req.body.email} );
+  if(user){
+    res.json({
+      "valid" : false,
+      "message" : "Email Already Exists"
+    })
+  } else {
+    res.json({
+      "valid" : true
+    })
   }
 });
 
