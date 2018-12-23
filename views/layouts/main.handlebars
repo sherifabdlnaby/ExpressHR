@@ -35,6 +35,7 @@
         integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
         crossorigin="anonymous"></script>
 <script src="/javascript/jquery.multi-select.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
 <script src="/javascript/flipclock.min.js"></script>
 <script>
     $('#my-select').multiSelect({keepOrder: true});
@@ -42,7 +43,11 @@
         $(".add-more").click(function () {
             var html = $(".copy").html();
             $(".after-add-more").after(html);
+            $.validate({
+                lang: 'en'
+            });
         });
+
         $("body").on("click", ".remove", function () {
             $(this).parents(".control-group").remove();
         });
@@ -50,6 +55,9 @@
         $(".add-more-2").click(function () {
             var html = $(".copy-2").html();
             $(".after-add-more-2").after(html);
+            $.validate({
+                lang: 'en'
+            });
         });
 
 
@@ -106,6 +114,12 @@
         });
     }
 
+    $.validate({
+        lang: 'en',
+        modules : 'security'
+    });
+
+    {{#if remaningTime}}
     let clock = $('.your-clock').FlipClock({{remaningTime}}, {
         countdown: true,
         callbacks: {
@@ -117,9 +131,8 @@
             }
         }
     });
-
-
-</script>
+    {{/if}}
+    </script>
 </body>
 
 </html>
