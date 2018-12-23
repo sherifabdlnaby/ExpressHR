@@ -28,7 +28,7 @@
                         <a class="badge-pill badge-success"><span class="text-white mb-1"><i class="fas fa-check"></i> Exam Done</span></a>
                         <a href="/exam/{{exam._id}}/result" class="card-link mb-1"> <i class="fas fa-eye"></i> View Result</a>
                     {{/if}}
-                    <a href="/{{cv.path}}" class="card-link ml-0 mb-0"> <i class="fas fa-download"></i> Download CV</a>
+                    <a href="/{{cv.path}}" class="card-link ml-0 mb-0"> <i class="fas fa-file-pdf"></i> Download CV</a>
                     <br/>
                     <form action="/job/applicants/{{../job._id}}/reject" method="post" >
                         <input type="hidden" name="applicant_id" value="{{_id}}">

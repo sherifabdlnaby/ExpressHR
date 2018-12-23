@@ -31,8 +31,6 @@ router.post('/login', (req, res, next) => {
 router.post('/register', (req, res) => {
   let errors = [];
 
-  //TODO Ajax-ly check username
-
   if(req.body.password != req.body.password2){
     errors.push({text:'Passwords do not match'});
   }
