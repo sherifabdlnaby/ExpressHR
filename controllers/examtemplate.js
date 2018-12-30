@@ -119,8 +119,14 @@ router.get('/', ensureAuthenticated, (req, res) => {
     ExamTemplate.find({'user': req.user.id})
         .populate('questions')
         .then(examtemplates => {
+            if(req.query.filter) {
+                examtemplates = examtemplates.filter(
+                    exam => exam.type.toLowerCase().includes(req.query.filter.toLowerCase())
+                )
+            }
             res.render('examtemplate/index', {
-                examtemplates: examtemplates
+                examtemplates: examtemplates,
+                filter: req.query.filter
             });
         });
 });

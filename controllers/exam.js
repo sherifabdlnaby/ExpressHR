@@ -185,7 +185,9 @@ router.post('/:id/start', ensureAuthenticated, async (req, res, next) => {
     }
 
     // check if correct answer
-    isCorrectAnswer = exam.selectedExams[selectedExamIndex].selectedQuestions[selectedExamIndex].question.correct.includes(req.body.answer);
+    isCorrectAnswer = exam.selectedExams[selectedExamIndex].selectedQuestions[selectedQuestionIndex].question.correct.includes(req.body.answer);
+
+
     exam.selectedExams[selectedExamIndex].selectedQuestions[selectedQuestionIndex].answer = {
         text: req.body.answer,
         correct: isCorrectAnswer

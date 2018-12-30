@@ -4,8 +4,14 @@
     <h5 class="card-subtitle mb-2 text-muted">{{examtemplates.length}} Exam Template </h5>
 
     <br/>
-        <div class="contatiner-fluid mb-3 p-2">
-            <div class="row">
+    <form action="" method="get">
+        <label><i class="fas fa-search"></i> Filter By Type </label>
+        <div class="md-form mt-0">
+            <input class="form-control" value="{{filter}}" type="text" placeholder="filter by type" name="filter" aria-label="Search">
+        </div>
+    </form>
+    <div class="contatiner-fluid mb-3 p-2">
+    <div class="row">
     {{#each examtemplates}}
         <div class="col-lg-4 p-2 pt-1 ">
             <div class="card card-body mb-2  h-100 border border-primary">

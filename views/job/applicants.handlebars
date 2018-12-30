@@ -10,6 +10,12 @@
     <h1 class="card-subtitle mb-2">{{job.title}}</h1>
     <h5 class="card-subtitle mb-2 text-muted">{{job.applicants.length}} Applicants </h5>
     <br/>
+    <form action="" method="get">
+        <label><i class="fas fa-search"></i> Filter By </label>
+        <div class="md-form mt-0">
+            <input class="form-control" value="{{filter}}" type="text" placeholder="filter by name, email or username" name="filter" aria-label="Search">
+        </div>
+    </form>
     <div class="contatiner-fluid mb-3 p-2">
         <div class="row">
         {{#each job.applicants}}

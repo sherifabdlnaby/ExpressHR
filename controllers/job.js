@@ -102,12 +102,23 @@ router.get('/applicants/:id/view', ensureAuthenticated, (req, res) => {
     }).populate('applicants.user')
         .populate('applicants.exam')
         .then(job => {
+            let filteredApplicants;
             if (job.employer._id != req.user.id) {
                 req.flash('error_msg', 'Not Authorized');
                 res.redirect('/job');
             } else {
+
+                if(req.query.filter) {
+                    req.query.filter = req.query.filter.toLowerCase();
+                    job.applicants = job.applicants.filter(
+                        applicant => applicant.user.name.toLowerCase().includes(req.query.filter)
+                            || applicant.user.username.toLowerCase().includes(req.query.filter)
+                            || applicant.user.email.toLowerCase().includes(req.query.filter));
+                }
+
                 res.render('job/applicants', {
-                    job: job
+                    job: job,
+                    filter: req.query.filter
                 });
             }
         });
@@ -205,7 +216,7 @@ router.post('/apply', ensureAuthenticated, uploadCv.single('cv'), (req, res, don
                 }
             }
         }).catch(err => {
-            console.log(err);
+        console.log(err);
         req.flash('error_msg', 'Something Wrong Happened');
         res.redirect('/job/view/' + req.body.id);
     })
@@ -265,7 +276,6 @@ router.get('/applicants/:id/sendexam/:applicant_id', ensureAuthenticated, (req, 
 });
 
 
-
 router.post('/applicants/:id/sendexam/', ensureAuthenticated, async (req, res, done) => {
 
     job = await Job.findOne({_id: req.params.id}).populate('applicants.user');
@@ -289,29 +299,29 @@ router.post('/applicants/:id/sendexam/', ensureAuthenticated, async (req, res, d
     };
 
 
-    if(! (req.body.examtemplates instanceof Array) ){
+    if (!(req.body.examtemplates instanceof Array)) {
         req.body.examtemplates = [req.body.examtemplates]
     }
 
-    selectedTemplates = await ExamTemplate.find( {'_id': { $in: req.body.examtemplates.map(mongoose.Types.ObjectId) }}).populate('questions');
+    selectedTemplates = await ExamTemplate.find({'_id': {$in: req.body.examtemplates.map(mongoose.Types.ObjectId)}}).populate('questions');
 
     selectedTemplates.forEach(function (template) {
         let N = template.questions.length;
         let numberOfQuestions = Math.floor(Math.random() * (N - 1)) + 1;
         let questions = shuffle(template.questions).slice(0, Math.max(numberOfQuestions, Math.min(3, N)));
         newExam.selectedExams.push({
-                examTemplate: template._id,
-                selectedQuestions: questions.map(function (question) {
-                    selectedAnswers = shuffle( question.incorrect ).slice(0,Math.min(question.incorrect.length, 3));
-                    selectedAnswers.push(shuffle(question.correct)[0]);
-                    return {
-                        question : question,
-                        answers:  shuffle(selectedAnswers),
-                        answer: ""
-                    }
-                })
-            });
-        newExam.noOfTotalQuestions+=questions.length
+            examTemplate: template._id,
+            selectedQuestions: questions.map(function (question) {
+                selectedAnswers = shuffle(question.incorrect).slice(0, Math.min(question.incorrect.length, 3));
+                selectedAnswers.push(shuffle(question.correct)[0]);
+                return {
+                    question: question,
+                    answers: shuffle(selectedAnswers),
+                    answer: ""
+                }
+            })
+        });
+        newExam.noOfTotalQuestions += questions.length
     });
 
     let exam = await (new Exam(newExam)).save();
@@ -326,10 +336,9 @@ router.post('/applicants/:id/sendexam/', ensureAuthenticated, async (req, res, d
 
     SendExamMail(exam, job);
 
-    req.flash('success_msg', 'Exam Sent to User. ##TODO SEND MAIL'); //TODO Send Mail
+    req.flash('success_msg', 'Exam Sent to User and will appear on their exams dashboard.');
     res.redirect('/job/applicants/' + req.params.id + '/view');
 });
-
 
 
 // Shuffle array (This should be in this file and better be sent to somewhere else but yea nvm...)
@@ -375,7 +384,7 @@ function SendExamMail(exam, job) {
         to: 'sherifabdlnaby@gmail.com',
         subject: "Application Filtration Exam for Job: " + job.title,
         text: "Congrats, You've been shortlisted for the job \"" + job.title + "\", You'll need to pass an Exam to proceed, " +
-            "You can start the exam anytime before the deadline: " + exam.deadline + " , The Exam duration is " + exam.duration  +
+            "You can start the exam anytime before the deadline: " + exam.deadline + " , The Exam duration is " + exam.duration +
             "Minutes.  To View Exam please go to http://localhost:5000/exam/" + exam._id + "/view"
     };
 
