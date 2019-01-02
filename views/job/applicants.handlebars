@@ -38,7 +38,7 @@
                     <br/>
                     <form action="/job/applicants/{{../job._id}}/reject" method="post" >
                         <input type="hidden" name="applicant_id" value="{{_id}}">
-                        {{#if (equals status "exam_done")}}
+                        {{#if (equals exam.status "done")}}
                             <input type="submit" class="btn btn-success mb-1" value="Accept">
                         {{/if}}
                         <input type="submit" class="btn btn-danger mb-1" value="Reject">
