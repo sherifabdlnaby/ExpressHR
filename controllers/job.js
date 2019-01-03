@@ -20,7 +20,9 @@ var uploadCv = multer({dest: 'public/uploads/cvs', storage: storage});
 require('../models/job');
 require('../models/exam');
 require('../models/examtemplate');
+require('../models/user');
 const Job = mongoose.model('job');
+const User = mongoose.model('user');
 const Exam = mongoose.model('exam');
 const ExamTemplate = mongoose.model('examtemplate');
 
@@ -374,28 +376,30 @@ function SendExamMail(exam, job) {
         secure: false,
         requireTLS: true,
         auth: {
-            user: 'sherifabdlnaby@gmail.com',
+            user: process.env.GMAIL,
             pass: process.env.GMAILPASSWORD
         }
     });
 
-    let Email = {
-        from: '"ExpressHR - Sherif Abdel-Naby" <sherifabdlnaby@gmail.com>',
-        to: 'sherifabdlnaby@gmail.com',
-        subject: "Application Filtration Exam for Job: " + job.title,
-        text: "Congrats, You've been shortlisted for the job \"" + job.title + "\", You'll need to pass an Exam to proceed, " +
-            "You can start the exam anytime before the deadline: " + exam.deadline + " , The Exam duration is " + exam.duration +
-            "Minutes.  To View Exam please go to http://localhost:5000/exam/" + exam._id + "/view"
-    };
+   User.findOne( {_id: exam.user} ).then(user => {
+       let Email = {
+           from: '"ExpressHR - Sherif Abdel-Naby" <' + process.env.GMAIL +'>',
+           to: user.email,
+           subject: "Application Filtration Exam for Job: " + job.title,
+           text: "Congrats, You've been shortlisted for the job \"" + job.title + "\" , You'll need to pass an Exam to proceed, " +
+               "You can start the exam anytime before the deadline: " + exam.deadline + " , The Exam duration is " + exam.duration +
+               " Minutes.  To Start your exam please go to " + process.env.ROOTURI +"exam/" + exam._id + "/view"
+       };
 
-    transporter.sendMail(Email, (error, info) => {
-        // for debugging
-        if (error) {
-            return console.log(error);
-        }
-        console.log("The message was sent!");
-        console.log(info);
-    });
+       transporter.sendMail(Email, (error, info) => {
+           // for debugging
+           if (error) {
+               return console.log(error);
+           }
+           console.log("The message was sent!");
+           console.log(info);
+       });
+   });
 }
 
 module.exports = router;

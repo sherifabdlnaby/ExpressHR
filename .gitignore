@@ -5,6 +5,7 @@ logs
 .idea/**
 
 public/uploads/**
+!/public/uploads/cvs/.gitkeep
 
 # Runtime data
 pids

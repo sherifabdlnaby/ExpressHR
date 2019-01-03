@@ -1,3 +1,3 @@
 module.exports = {
-    'url' : 'mongodb://localhost/expressHR'
+    'url' : process.env.MONGODB_URI
 };
